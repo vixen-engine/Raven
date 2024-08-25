@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Vixen.Raven</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Antlr4.Runtime" Version="4.6.6"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="Antlr/RavenLexer.g4"/>
+        <Content Include="Antlr/RavenParser.g4"/>
+        <Content Include="Antlr/UnicodeClasses.g4"/>
+    </ItemGroup>
+</Project>
