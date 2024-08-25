@@ -1,8 +1,7 @@
 using Antlr4.Runtime.Tree;
-using Vixen.Raven.Antlr;
 using Vixen.Raven.Ast;
 
-namespace Vixen.Raven;
+namespace Vixen.Raven.Antlr;
 
 public partial class BuildAstVisitor : RavenParserBaseVisitor<Node> {
     public override Node VisitCompilation_unit(RavenParser.Compilation_unitContext context) {

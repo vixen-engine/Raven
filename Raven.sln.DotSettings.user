@@ -3,6 +3,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=21514236_002D5c6a_002D4c08_002D98b0_002Ddec881c15e2d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestAntlrParser" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::6022BEBC-D9F5-4F71-A003-20EA824FAA34::net8.0::Tests.ParserTests.TestAntlrParser&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::6022BEBC-D9F5-4F71-A003-20EA824FAA34::net8.0::Tests.ParserTests.Test_SyntaxTree&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

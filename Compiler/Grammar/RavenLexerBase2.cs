@@ -1,15 +1,15 @@
 using Antlr4.Runtime;
 
-namespace Vixen.Raven.Antlr;
+namespace Vixen.Raven.Grammar;
 
-public abstract class RavenLexerBase : Lexer {
+public abstract class RavenLexerBase2 : Lexer {
     protected int interpolatedStringLevel;
     protected Stack<bool> interpolatedVerbatiums = new();
     protected Stack<int> curlyLevels = new();
     protected bool verbatium;
 
 
-    public RavenLexerBase(ICharStream input) : base(input) { }
+    public RavenLexerBase2(ICharStream input) : base(input) { }
 
     protected void OnInterpolatedRegularStringStart() {
         interpolatedStringLevel++;

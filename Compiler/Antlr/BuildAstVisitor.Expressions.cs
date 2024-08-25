@@ -1,8 +1,7 @@
 using Antlr4.Runtime.Tree;
-using Vixen.Raven.Antlr;
 using Vixen.Raven.Ast;
 
-namespace Vixen.Raven;
+namespace Vixen.Raven.Antlr;
 
 public partial class BuildAstVisitor {
     public override Node VisitExpression(RavenParser.ExpressionContext context) => Visit(context.GetChild(0));

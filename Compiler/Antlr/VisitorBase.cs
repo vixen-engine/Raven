@@ -1,6 +1,6 @@
 using Vixen.Raven.Ast;
 
-namespace Vixen.Raven;
+namespace Vixen.Raven.Antlr;
 
 public class VisitorBase {
     protected virtual Node Visit(Node node) => node;

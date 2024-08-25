@@ -2,8 +2,10 @@
 using Vixen.Raven;
 using Vixen.Raven.Antlr;
 using Vixen.Raven.Ast;
+using Vixen.Raven.Syntax;
 using Xunit;
 using Xunit.Abstractions;
+using BuildAstVisitor = Vixen.Raven.Antlr.BuildAstVisitor;
 
 namespace Tests;
 
@@ -33,5 +35,16 @@ public class ParserTests(ITestOutputHelper log) {
         Assert.Equal("count", testMethod.Parameters[1].Name);
 
         Assert.Equal(12, shader.Declarations.Count);
+    }
+
+    [Fact]
+    void Test_SyntaxTree() {
+        var path = "../../../../Feed/Example1.rvn";
+        var text = File.ReadAllText(path);
+        var tree = SyntaxTree.ParseText(text);
+
+        var root = tree.GetRoot();
+        Assert.IsType<CompilationUnitSyntax>(root);
+
     }
 }

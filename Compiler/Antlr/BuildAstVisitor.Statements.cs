@@ -1,7 +1,6 @@
-using Vixen.Raven.Antlr;
 using Vixen.Raven.Ast;
 
-namespace Vixen.Raven;
+namespace Vixen.Raven.Antlr;
 
 public partial class BuildAstVisitor {
     public override Node VisitStatement_list(RavenParser.Statement_listContext context) {
