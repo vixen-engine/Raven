@@ -16,6 +16,22 @@ Project is in it initial phase. Mostly as a research project.
 - But it will be easy to distribute shaders or shader libraries (math and stuff).
 
 
+## Not supported compared to Roslyn
+
+- goto_statement
+- labeled_statement
+- lock_statement
+- throw_statement
+- try_statement
+- unsafe_statement
+- yield_statement
+- stack_alloc_array_creation_expression
+- throw_expression
+
+//    | function_pointer_type // TODO: not sure if this is possible to implement
+//    | 'ref' 'readonly'? type #RefType // TODO: not sure if this is possible to implement
+//    | scoped_type // TODO: same
+
 ## Usage
 
 As a CLI tool

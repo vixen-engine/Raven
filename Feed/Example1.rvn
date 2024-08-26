@@ -3,9 +3,30 @@ package Vixen.Test
 import Vixen.Core
 import Vixen.BaseShaders
 
-// Test class
+// Test shader
+[FooBar]
 shader TestShader : ExampleBase, CustomShader {
     const val Multiplier = 42
+    var test = "str"
+    
+    var prop {
+        get => test
+        set => test = value
+    }
+    
+    [property: FooBar(test: "random_literal")]
+    public abstract var didTest {
+        willSet {
+            printf(value)
+        }
+        
+        didSet => printf(value)
+    }
+    
+    var anonymousObject: object = {
+        Test = 42,
+        FooBar = "string"
+    }
     
     val len: int
     val test: FooBar = [1, 2, 3, 4]
@@ -16,6 +37,9 @@ shader TestShader : ExampleBase, CustomShader {
         'c',
         'a'
     ]
+    
+    func fooBar() => 42
+    func fooBar(): int => 42
     
     init() {
         Test()
@@ -55,16 +79,24 @@ shader TestShader : ExampleBase, CustomShader {
         var bar = 7 + 4 * "test" / 42f
         var foo = 7 + 4 * "test" / 42f
         var tst = 7 + 4 * "test" / 42f
-        //Test();
+        
+        var test: int[]
+        var test: double[][]
+        
+        Test()
     }
     
     func TestMethod(name: string, count: int = 42): float4 {
-       // var test = "string";
-      //  val res = name + test;
+        var test = "string"
+        val res = name + test
         
-        //val hash = res.GetHashCode();
-    
-      //  return 42.3f;
+        val hash = res.GetHashCode()
+        return hash.ToInt()
     }
 }
 
+struct FooBar {
+
+}
+
+readonly record struct Messenger(userId: int, message: string)

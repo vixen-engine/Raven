@@ -25,6 +25,12 @@ OR: 'or';
 AND: 'and';
 NOT: 'not';
 DISCARD: '_';
+GET: 'get';
+SET: 'set';
+WILL_SET: 'willSet';
+DID_SET: 'didSet';
+USING: 'using';
+
 
 
 
@@ -40,7 +46,6 @@ IMPORT:         'import';       // Replacing 'using'
 PACKAGE:        'package';
 INIT:           'init';
 
-WHERE:          'where'; // type parameter constrain
 NAMEOF:         'nameof';
 
 
@@ -54,9 +59,7 @@ BOOL:           'bool';
 BREAK:          'break';
 BYTE:           'byte';
 CASE:           'case';
-//CATCH:  'catch';
 CHAR:           'char';
-//CHECKED:'checked';
 CLASS:          'class';
 CONTINUE:       'continue';
 //DECIMAL:'decimal';
@@ -67,19 +70,14 @@ ELSE:           'else';
 ENUM:           'enum';
 EXPLICIT:       'explicit';
 FALSE:          'false';
-//FINALLY:'finally';
 FLOAT:          'float';
 FOR:            'for';
-//FOREACH:'foreach';
-//GOTO:   'goto';
 IF:             'if';
 IMPLICIT:       'implicit';
 IN:             'in';
 INT:            'int';
 IS:             'is';
-//LOCK:           'lock'; // TODO: not sure if it's possible to implement
 LONG:           'long';
-//NAMESPACE:'namespace';
 NEW:            'new';
 NULL_:          'null';
 OBJECT:         'object';
@@ -91,32 +89,22 @@ RETURN:         'return';
 SBYTE:          'sbyte';
 SHORT:          'short';
 SIZEOF:         'sizeof';
-//STACKALLOC:'stackalloc';
 STRING:         'string';
 STRUCT:         'struct';
 SWITCH:         'switch';
-//THIS:   'this';
-//THROW: 'throw';
 TRUE:           'true';
-//TRY:    'try';
 TYPEOF:         'typeof';
 UINT:           'uint';
 ULONG:          'ulong';
-//UNCHECKED:'unchecked';
 USHORT:         'ushort';
 //VOID:   'void';
 WHILE:          'while';
 WHEN:           'when';
-//WHERE:  'where';
-//YIELD:  'yield';
-//  | '__arglist'
-//  | '__makeref'
-//  | '__reftype'
-//  | '__refvalue'
+WHERE:          'where';
+
 
 // ===== Modifiers =====
 ABSTRACT:       'abstract';
-//ASYNC:          'async';
 CONST:          'const';
 //EXTERN:         'extern';
 //FILE:           'file';
@@ -215,30 +203,8 @@ OP_LEFT_SHIFT_ASSIGNMENT: '<<=';
 OP_COALESCING_ASSIGNMENT: '??=';
 OP_RIGHT_SHIFT:           '>>';
 OP_RIGHT_SHIFT_ASSIGNMENT: '>>=';
-
-
-// TOOD: not implemented
-//  | '>>>'
-//  | '>>>='
-//  | 'as'
-//  | 'is'
-
-// TODO: redundant?
-//OP_AS:                    'as';
-//OP_AS_SAFE:               'as?';
-//OP_IN:                    'in';
-//OP_NOT_IN:                '!in';
-//OP_IS:                    'is';
-//OP_NOT_IS:                '!is';
-
-
-
-
-
-// TODO: string interpolation stuff
-
-
-
+OP_UNSIGNED_RIGHT_SHIFT:   '>>>';
+OP_UNSIGNED_RIGHT_SHIFT_ASSIGNMENT: '>>>=';
 
 
 // Preprocessor directives

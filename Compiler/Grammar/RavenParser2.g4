@@ -19,9 +19,8 @@ import_directive
 
 
 
-// [property: FooBar(foo: "bar"), ...]
 attribute_list
-    : '[' attribute_target_specifier? attribute (',' attribute)* ']'
+    : '[' attribute_target_specifier? attribute (',' attribute)* ']' NL+
     ;
 
 attribute_target_specifier
@@ -45,12 +44,9 @@ parameter_list
     ;
 
 parameter
-//    : attribute_list* modifier* type? (identifier_token | '__arglist') equals_value_clause?
-//    : attribute_list* modifier* type? identifier_token equals_value_clause?
     // TODO: verify if type can be optional or not
     : attribute_list* modifier* identifier_token (':' type) equals_value_clause?
     ;
-
 
 
 
@@ -99,7 +95,7 @@ member_declaration
     | base_type_declaration NL*
     | delegate_declaration NL*
 //    | enum_member_declaration // TODO: is this valid?
-//    | global_statement // TODO: is this valid??
+//    | global_statement // TODO: is this valid?? Probably for Program.cs usage (whitout class)
     ;
     
 base_property_declaration
@@ -132,8 +128,6 @@ destructor_declaration
     ;
     
 method_declaration
-// TODO format
-//  : attribute_list* modifier* type explicit_interface_specifier? identifier_token type_parameter_list? parameter_list type_parameter_constraint_clause* (block | (arrow_expression_clause NL))
   : attribute_list* modifier* FUNC explicit_interface_specifier? identifier_token type_parameter_list? parameter_list type_parameter_constraint_clause* (':' type)? (block | (arrow_expression_clause NL))
   ;
   
@@ -142,17 +136,15 @@ explicit_interface_specifier
     ;
   
 property_declaration
-    : attribute_list* modifier* type explicit_interface_specifier? identifier_token (accessor_list | ((arrow_expression_clause | equals_value_clause) NL))
+    : attribute_list* modifier* VAR explicit_interface_specifier? identifier_token (':' type)? (accessor_list | ((arrow_expression_clause | equals_value_clause) NL))
     ;
     
 accessor_list
-    : '{' accessor_declaration* '}'
+    : '{' NL* accessor_declaration* NL* '}'
     ;
 
 accessor_declaration
-// TODO
-//    : attribute_list* modifier* ('get' | 'set' | 'init' | 'add' | 'remove' | identifier_token) (block | (arrow_expression_clause ';'))
-    : attribute_list* modifier* identifier_token (block | (arrow_expression_clause NL))
+    : attribute_list* modifier* (GET | SET | WILL_SET | DID_SET) (block | (arrow_expression_clause NL)) NL*
     ;
 
 indexer_declaration
@@ -166,22 +158,14 @@ bracketed_parameter_list
 delegate_declaration
     : attribute_list* modifier* DELEGATE type identifier_token type_parameter_list? parameter_list type_parameter_constraint_clause* NL
     ;
-
-global_statement
-  : attribute_list* modifier* statement
-  ;
   
 conversion_operator_declaration
     : attribute_list* modifier* (IMPLICIT | EXPLICIT) explicit_interface_specifier? OPERATOR type parameter_list (block | (arrow_expression_clause NL))
     ; 
     
 operator_declaration
-//    : attribute_list* modifier* type explicit_interface_specifier? OPERATOR ('+' | '-' | '!' | '~' | '++' | '--' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'false' | 'true' | 'is') parameter_list (block | (arrow_expression_clause NL))
-    : attribute_list* modifier* type explicit_interface_specifier? OPERATOR ('+' | '-' | '!' | '~' | '++' | '--' | '*' | '/' | '%' | '<<' | '>>' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'false' | 'true' | 'is') parameter_list (block | (arrow_expression_clause NL))
+    : attribute_list* modifier* type explicit_interface_specifier? OPERATOR ('+' | '-' | '!' | '~' | '++' | '--' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'false' | 'true' | 'is') parameter_list (block | (arrow_expression_clause NL))
     ;
-  
-  
-  
   
 base_type_declaration
     : enum_declaration
@@ -196,38 +180,33 @@ type_declaration
     | struct_declaration
     ;
     
-// TODO: check the colon at the end; how to handle that with the new line stuff
 class_declaration
-     : attribute_list* modifier* CLASS identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
+     : attribute_list* modifier* CLASS identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* ('{' NL+ member_declaration* NL+ '}')? NL
      ; 
      
 shader_declaration
-//     : attribute_list* modifier* SHADER identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
-     : attribute_list* modifier* SHADER identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* (('{' NL+ member_declaration* NL+ '}') | NL)
+     : attribute_list* modifier* SHADER identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* ('{' NL+ member_declaration* NL+ '}')? NL
      ; 
 
 protocol_declaration
-    : attribute_list* modifier* PROTOCOL identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
+    : attribute_list* modifier* PROTOCOL identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* ('{' NL+ member_declaration* NL+ '}')? NL
     ;
 
 record_declaration
-//  : attribute_list* modifier* syntax_token (CLASS | STRUCT)? identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
-    : attribute_list* modifier* RECORD (CLASS | STRUCT)? identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
+    : attribute_list* modifier* RECORD (CLASS | STRUCT)? identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* ('{' NL+ member_declaration* NL+ '}')? NL
     ;
 
 struct_declaration
-    : attribute_list* modifier* STRUCT identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* '{'? member_declaration* '}'? ';'?
+    : attribute_list* modifier* STRUCT identifier_token type_parameter_list? parameter_list? base_list? type_parameter_constraint_clause* ('{' NL+ member_declaration* NL+ '}')? NL
     ;
 
 enum_declaration
-    : attribute_list* modifier* ENUM identifier_token base_list? '{'? (enum_member_declaration (',' enum_member_declaration)* ','?)? '}'? ';'?
+    : attribute_list* modifier* ENUM identifier_token base_list? '{' NL+ (enum_member_declaration (',' enum_member_declaration)*)? '}' NL
     ;
     
 enum_member_declaration
     : attribute_list* modifier* identifier_token equals_value_clause?
     ;
-
-
 
 type_parameter_list
     : '<' type_parameter (',' type_parameter)* '>'
@@ -237,13 +216,10 @@ type_parameter
     : attribute_list* (IN | OUT)? identifier_token
     ;
     
-    
-// Constrants
 type_parameter_constraint_clause
     : WHERE identifier_name ':' type_parameter_constraint (',' type_parameter_constraint)*
     ;
     
-// TODO: check the allows
 type_parameter_constraint
 //    : allows_constraint_clause
     : class_or_struct_constraint    #ClassOrStructConstraint
@@ -269,8 +245,6 @@ class_or_struct_constraint
     | STRUCT '?'?
     ;
     
-    
-    
 base_list
     : ':' base_type (',' base_type)*
     ;
@@ -288,19 +262,7 @@ simple_base_type
     : type
     ;
 
-
-
-
-
-
-
-
-
-
-// TODO: verify if the bracketed_argument_list is needed
 variable_declaration
-//    : type variable_declarator (',' variable_declarator)*
-//    : identifier_token bracketed_argument_list? equals_value_clause?
     : (VAR | VAL) identifier_token (':' type)? equals_value_clause?
     ;
     
@@ -317,50 +279,29 @@ bracketed_argument_list
     ;
 
 
-
-
-
-
-
-
-
-
-
 // =====================================================================================================================
 // ================================================= Statements ========================================================
 // =====================================================================================================================
 block
-    // TODO: verify if attribute_list is correct here
-    : attribute_list* '{' NL* statement* NL* '}'
+    : '{' NL* statement* NL* '}'
     ;
 
 statement
     : block
     | break_statement
-//  | checked_statement
-//  | common_for_each_statement
     | continue_statement
     | repeat_statement
     | empty_statement
     | expression_statement
-//  | fixed_statement
     | for_statement
-//  | goto_statement
     | if_statement
-//  | labeled_statement // TODO: this is goto shit
     | local_declaration_statement
     | local_function_statement
-//  | lock_statement
     | return_statement
-//  | switch_statement
-//  | throw_statement
-//  | try_statement
-//  | unsafe_statement
-//  | using_statement
-//  | while_statement
-//  | yield_statement
-  ;
-
+    | switch_statement
+    | using_statement
+    | while_statement
+    ;
 
 break_statement
     : attribute_list* BREAK NL+
@@ -403,52 +344,63 @@ local_function_statement
     ;
     
 local_declaration_statement
-//    : attribute_list* 'await'? 'using'? modifier* variable_declaration ';'
-    : attribute_list* modifier* variable_declaration NL
+    : attribute_list* USING? modifier* variable_declaration NL
+    ;
+    
+while_statement
+    : attribute_list* 'while' '(' expression ')' statement
     ;
 
-
-
-
-
-
-
-
-
-
-syntax_token
-    : character_literal_token
-    | identifier_token
-    | keyword
-    | numeric_literal_token
-    | operator_token
-    | punctuation_token
-    | string_literal_token
+using_statement
+    : attribute_list* 'using' '(' (variable_declaration | expression) ')' statement
     ;
+
+switch_statement
+  : attribute_list* 'switch' '('? expression ')'? '{' switch_section* '}'
+  ;
+
+switch_section
+  : switch_label+ statement+
+  ;
+
+switch_label
+  : case_pattern_switch_label
+  | case_switch_label
+  | default_switch_label
+  ;
+
+case_pattern_switch_label
+  : CASE pattern when_clause? ':'
+  ;
+  
+case_switch_label
+    : CASE expression ':'
+    ;
+
+default_switch_label
+    : DEFAULT ':'
+    ;
+
 
 
 // =====================================================================================================================
 // ================================================= Expressions =======================================================
 // =====================================================================================================================
 expression
-    : anonymous_function_expression                                             #AnonymousFunctionExpression
+    : anonymous_function_expression         #AnonymousFunctionExpression
     | '{' NL* (anonymous_object_member_declarator (',' NL* anonymous_object_member_declarator)*)? NL* '}' #AnonymousObjectCreationExpression
 //  | array_creation_expression
-//    | expression ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=' | '??=') expression #AssignmentExpression
-    | expression ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '??=') expression #AssignmentExpression
+    | expression ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=' | '??=') expression #AssignmentExpression
 //  | await_expression
 //  | base_object_creation_expression
-//    | expression ('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
-    | expression ('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
+    | expression ('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
     | '(' type ')' expression               #CastExpression
-//  | checked_expression
-    | '[' NL* (collection_element (',' NL* collection_element)*)? NL* ']'       #CollectionExpression
+    | '[' NL* (collection_element (',' NL* collection_element)*)? NL* ']' #CollectionExpression
     | expression '?' expression             #ConditionalAccessExpression
     | expression '?' expression ':' expression #ConditionalExpression
     | type variable_designation             #DeclarationExpression
     | DEFAULT '(' type ')'                  #DefaultExpression
     | expression bracketed_argument_list    #ElementAccessExpression
-//  | element_binding_expression
 //  | implicit_array_creation_expression
     | bracketed_argument_list               #ImplicitElementAccess
 //  | implicit_stack_alloc_array_creation_expression
@@ -466,9 +418,7 @@ expression
     | expression DOUBLE_DOT expression      #RangeExpression
     | REF expression                        #RefExpression
     | SIZEOF '(' type ')'                   #SizeofExpression
-//  | stack_alloc_array_creation_expression
     | expression 'switch' '{' NL+ (switch_expression_arm (',' switch_expression_arm)*)? NL+ '}' #SwitchExpression
-//  | throw_expression
     | '(' argument (',' argument)+ ')'?     #TupleExpression
     | type                                  #TypeExpression
     | TYPEOF '(' type ')'                   #TypeofExpression
@@ -548,26 +498,11 @@ prefix_unary_expression
     | '^' expression
     | '~' expression
     ;
-    
-switch_expression
-    : expression 'switch' '{' NL+ (switch_expression_arm (',' switch_expression_arm)*)? NL+ '}'
-    ;
 
 switch_expression_arm
     : pattern when_clause? '=>' expression
     ;
-
-
-// TODO: patterns
-//is_pattern_expression
-//    : expression 'is' pattern
-//    ;
-
-
-
-
-
-
+    
 pattern
     : pattern (OR | AND) pattern    #BinaryPattern
     | expression                    #ConstantPattern
@@ -602,32 +537,27 @@ when_clause
     : WHEN expression
     ;
 
-
-
-
-
-
-
-
-
-
-
-
+syntax_token
+    : character_literal_token
+    | identifier_token
+    | keyword
+    | numeric_literal_token
+    | operator_token
+    | punctuation_token
+    | string_literal_token
+    ;
 
 
 // =====================================================================================================================
 // ================================================= TYPES =============================================================
 // =====================================================================================================================
 type
-    : type array_rank_specifier+ #ArrayType
-//    | function_pointer_type // TODO: not sure if this is possible to implement
-    | name #NameType
-    | type '?' #NullableType
+    : type array_rank_specifier+                #ArrayType
+    | name                                      #NameType
+    | type '?'                                  #NullableType
 //    | omitted_type_argument
-    | type '*' #PointerType
-    | predefined_type #PredefinedType
-//    | 'ref' 'readonly'? type #RefType // TODO: not sure if this is possible to implement
-//    | scoped_type // TODO: same
+    | type '*'                                  #PointerType
+    | predefined_type                           #PredefinedType
     | '(' tuple_element (',' tuple_element)+ ')' #TupleType
     ;
 
