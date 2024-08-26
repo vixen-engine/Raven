@@ -17,10 +17,8 @@
         <Content Include="Antlr/RavenLexer.g4"/>
         <Content Include="Antlr/RavenParser.g4"/>
         <Content Include="Antlr/UnicodeClasses.g4"/>
-        <Content Include="Grammar\Expressions.g4" />
         <Content Include="Grammar\RavenLexer2.g4" />
         <Content Include="Grammar\RavenParser2.g4" />
-        <Content Include="Grammar\Types.g4" />
         <Content Include="Grammar\UnicodeClasses.g4" />
     </ItemGroup>
 </Project>

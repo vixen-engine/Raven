@@ -20,6 +20,11 @@ NL:                          NewLine;
 
 // NEW ones
 GLOBAL: 'global';
+RECORD: 'record';
+OR: 'or';
+AND: 'and';
+NOT: 'not';
+DISCARD: '_';
 
 
 
@@ -35,6 +40,13 @@ IMPORT:         'import';       // Replacing 'using'
 PACKAGE:        'package';
 INIT:           'init';
 
+WHERE:          'where'; // type parameter constrain
+NAMEOF:         'nameof';
+
+
+
+
+
 // Keywords
 AS:             'as';
 BASE:           'base';
@@ -49,12 +61,11 @@ CLASS:          'class';
 CONTINUE:       'continue';
 //DECIMAL:'decimal';
 DEFAULT:        'default';
-//DELEGATE:'delegate';
+DELEGATE:       'delegate';
 DOUBLE:         'double';
 ELSE:           'else';
 ENUM:           'enum';
-//EVENT:  'event';
-//EXPLICIT:'explicit';
+EXPLICIT:       'explicit';
 FALSE:          'false';
 //FINALLY:'finally';
 FLOAT:          'float';
@@ -62,8 +73,8 @@ FOR:            'for';
 //FOREACH:'foreach';
 //GOTO:   'goto';
 IF:             'if';
-//IMPLICIT:'implicit';
-//IN:     'in';
+IMPLICIT:       'implicit';
+IN:             'in';
 INT:            'int';
 IS:             'is';
 //LOCK:           'lock'; // TODO: not sure if it's possible to implement
@@ -72,11 +83,11 @@ LONG:           'long';
 NEW:            'new';
 NULL_:          'null';
 OBJECT:         'object';
-//OPERATOR:'operator';
-//OUT:    'out';
+OPERATOR:       'operator';
+OUT:            'out';
 //PARAMS: 'params';
-//REF:            'ref'; // TODO: not sure if it's possible to implement
-//RETURN: 'return';
+REF:            'ref'; // TODO: not sure if it's possible to implement
+RETURN:         'return';
 SBYTE:          'sbyte';
 SHORT:          'short';
 SIZEOF:         'sizeof';
@@ -88,14 +99,14 @@ SWITCH:         'switch';
 //THROW: 'throw';
 TRUE:           'true';
 //TRY:    'try';
-//TYPEOF:'typeof';
+TYPEOF:         'typeof';
 UINT:           'uint';
 ULONG:          'ulong';
 //UNCHECKED:'unchecked';
 USHORT:         'ushort';
 //VOID:   'void';
 WHILE:          'while';
-//WHEN:   'when';
+WHEN:           'when';
 //WHERE:  'where';
 //YIELD:  'yield';
 //  | '__arglist'
@@ -126,13 +137,6 @@ VIRTUAL:        'virtual';
 //VOLATILE:       'volatile';
 
 
-// OLD (DEPRECATED) keywords
-IN:             'in';
-RETURN:         'return';
-OUT:            'out';
-WHERE:          'where';
-NAMEOF:         'nameof';
-// ===== OLD END ======
 
 
 // Identifiers

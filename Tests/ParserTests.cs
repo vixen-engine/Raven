@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using System.Reflection.Metadata;
 using Vixen.Raven;
 using Vixen.Raven.Antlr;
 using Vixen.Raven.Ast;
@@ -45,6 +46,5 @@ public class ParserTests(ITestOutputHelper log) {
 
         var root = tree.GetRoot();
         Assert.IsType<CompilationUnitSyntax>(root);
-
     }
 }
