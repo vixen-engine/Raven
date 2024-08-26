@@ -44,8 +44,7 @@ parameter_list
     ;
 
 parameter
-    // TODO: verify if type can be optional or not
-    : attribute_list* modifier* identifier_token (':' type) equals_value_clause?
+    : attribute_list* modifier* identifier_token (':' type)? equals_value_clause?
     ;
 
 
@@ -336,7 +335,7 @@ else_clause
     ;
 
 return_statement
-    : attribute_list* 'return' expression? NL
+    : attribute_list* RETURN expression? NL
     ;
 
 local_function_statement
@@ -348,15 +347,15 @@ local_declaration_statement
     ;
     
 while_statement
-    : attribute_list* 'while' '(' expression ')' statement
+    : attribute_list* WHILE '(' expression ')' statement
     ;
 
 using_statement
-    : attribute_list* 'using' '(' (variable_declaration | expression) ')' statement
+    : attribute_list* USING '(' (variable_declaration | expression) ')' statement
     ;
 
 switch_statement
-  : attribute_list* 'switch' '('? expression ')'? '{' switch_section* '}'
+  : attribute_list* SWITCH '('? expression ')'? '{' switch_section* '}'
   ;
 
 switch_section
@@ -404,7 +403,7 @@ expression
 //  | implicit_array_creation_expression
     | bracketed_argument_list               #ImplicitElementAccess
 //  | implicit_stack_alloc_array_creation_expression
-//  | initializer_expression TODO: this is probrary not valid in our grammar as we don't use 'new' keyword for anonymous object creation
+//  | initializer_expression TODO: this is probably not valid in our grammar as we don't use 'new' keyword for anonymous object creation
     | instance_expression                   #InstanceExpression
 //  | interpolated_string_expression
     | expression argument_list              #InvocationExpression
@@ -463,7 +462,7 @@ lambda_expression
     ;
 
 parenthesized_lambda_expression
-    : attribute_list* modifier* type? parameter_list '=>' (block | expression)
+    : attribute_list* modifier* parameter_list (':' type)? '=>' (block | expression)
     ;
 
 simple_lambda_expression
@@ -546,6 +545,38 @@ syntax_token
     | punctuation_token
     | string_literal_token
     ;
+    
+    
+//interpolated_string_expression
+//    : '$"' interpolated_string_content* '"'
+//    | '$@"' interpolated_string_content* '"'
+//    ;
+//    
+//interpolated_string_content
+//    : interpolated_string_text
+//    | interpolation
+//    ;
+//    
+//interpolated_string_text
+//    : interpolated_string_text_token
+//    ;
+//
+//interpolation
+//    : '{' expression interpolation_alignment_clause? interpolation_format_clause? '}'
+//    ;
+//    
+//interpolation_alignment_clause
+//    : ',' expression
+//    ;
+//
+//interpolation_format_clause
+//    : ':' interpolated_string_text_token
+//    ;
+//    
+//// TODO: not sure about this
+//interpolated_string_text_token
+//    : CommonCharacter*
+//    ;
 
 
 // =====================================================================================================================
@@ -660,7 +691,7 @@ identifier_token
     ;
 
 character_literal_token
-    : CHARACTER_LITERAL
+    :  CHARACTER_LITERAL
     ;
     
 numeric_literal_token

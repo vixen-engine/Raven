@@ -18,6 +18,11 @@ shader TestShader : ExampleBase, CustomShader {
     public abstract var didTest {
         willSet {
             printf(value)
+            
+            val foo = () => 42
+            val bar = asd => 42
+            val baz = (asd: int) => 42
+            val baz = (asd: int): string => 42
         }
         
         didSet => printf(value)

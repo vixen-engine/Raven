@@ -120,7 +120,6 @@ READONLY:       'readonly';
 //SCOPED:         'scoped';
 //SEALED:         'sealed';
 STATIC:         'static';
-//UNSAFE:         'unsafe';
 VIRTUAL:        'virtual';
 //VOLATILE:       'volatile';
 
@@ -159,11 +158,11 @@ INTERR:                   '?';
 ARROW:                    '->';
 LAMBDA:                   '=>';
 // TODO: what about these?
-//  '"'
 //  '#'
 //  '/>'
 //  '</'
-//  '\''
+//SINGLE_QUOTE: '\'';
+//DOUBLE_QUOTE: '"';
 //  '\\'
 
 
