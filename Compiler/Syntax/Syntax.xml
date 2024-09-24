@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tree Root="SyntaxNode">
+    <PredefinedNode Name="SyntaxToken" Base="SyntaxNode"/>
+
+    <!-- Names -->
+    <AbstractNode Name="NameSyntax" Base="TypeSyntax">
+        <TypeComment>
+            <summary>
+                Provides the base class from which the classes that represent name syntax nodes are derived. This
+                is an abstract class.
+            </summary>
+        </TypeComment>
+    </AbstractNode>
+    <AbstractNode Name="SimpleNameSyntax" Base="NameSyntax">
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>SyntaxToken representing the identifier of the simple name.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field>
+        <TypeComment>
+            <summary>
+                Provides the base class from which the classes that represent simple name syntax nodes are derived.
+                This is an abstract class.
+            </summary>
+        </TypeComment>
+    </AbstractNode>
+    <Node Name="IdentifierNameSyntax" Base="SimpleNameSyntax">
+        <Kind Name="IdentifierName"/>
+        <Field Name="Identifier" Type="SyntaxToken" Override="true">
+            <Kind Name="IdentifierToken"/>
+            <Kind Name="GlobalKeyword"/>
+            <PropertyComment>
+                <summary>
+                    SyntaxToken representing the keyword for the kind of the identifier name.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for identifier name.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates an IdentifierNameSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="QualifiedNameSyntax" Base="NameSyntax">
+        <Kind Name="QualifiedName"/>
+        <Field Name="Left" Type="NameSyntax">
+            <PropertyComment>
+                <summary>
+                    NameSyntax node representing the name on the left side of the dot token of the qualified
+                    name.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="DotToken" Type="SyntaxToken">
+            <Kind Name="DotToken"/>
+            <PropertyComment>
+                <summary>SyntaxToken representing the dot.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Right" Type="SimpleNameSyntax">
+            <PropertyComment>
+                <summary>
+                    SimpleNameSyntax node representing the name on the right side of the dot token of the qualified
+                    name.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for qualified name.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a QualifiedNameSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+
+
+    <!-- Expressions -->
+    <AbstractNode Name="ExpressionOrPatternSyntax" Base="SyntaxNode"/>
+    <AbstractNode Name="ExpressionSyntax" Base="ExpressionOrPatternSyntax">
+        <TypeComment>
+            <summary>
+                Provides the base class from which the classes that represent expression syntax nodes are derived.
+                This is an abstract class.
+            </summary>
+        </TypeComment>
+    </AbstractNode>
+
+
+    <!-- Type Names -->
+    <AbstractNode Name="TypeSyntax" Base="ExpressionSyntax">
+        <TypeComment>
+            <summary>
+                Provides the base class from which the classes that represent type syntax nodes are derived. This
+                is an abstract class.
+            </summary>
+        </TypeComment>
+    </AbstractNode>
+
+</Tree>

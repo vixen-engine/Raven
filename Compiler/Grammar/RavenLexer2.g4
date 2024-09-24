@@ -121,7 +121,6 @@ READONLY:       'readonly';
 //SEALED:         'sealed';
 STATIC:         'static';
 VIRTUAL:        'virtual';
-//VOLATILE:       'volatile';
 
 
 

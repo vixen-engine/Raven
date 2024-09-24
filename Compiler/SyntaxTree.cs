@@ -1,8 +1,8 @@
 using Antlr4.Runtime;
 using System.Text;
-using Vixen.Raven.Antlr;
-using Vixen.Raven.Antlr.SyntaxBuilder;
+using Vixen.Raven.Grammar;
 using Vixen.Raven.Syntax;
+using Vixen.Raven.SyntaxBuilder;
 
 namespace Vixen.Raven;
 
@@ -46,12 +46,12 @@ public sealed class SyntaxTree {
         
         // Antlr
         var stream = new AntlrInputStream(text);
-        var lexer = new RavenLexer(stream);
+        var lexer = new RavenLexer2(stream);
         var tokenStream = new CommonTokenStream(lexer);
-        var parser = new RavenParser(tokenStream);
+        var parser = new RavenParser2(tokenStream);
         
         // Internal visitor to transform ANTLR into Syntax Tree
-        var visitor = new SyntaxAntlrVisitor();
+        var visitor = new SyntaxAntlrVisitor(syntaxTree);
         var tree = parser.compilation_unit();
 
         syntaxTree.root = tree.Accept(visitor);
