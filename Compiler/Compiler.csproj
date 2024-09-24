@@ -23,10 +23,11 @@
         <Content Include="Grammar\UnicodeClasses.g4"/>
         <AdditionalFiles Include="Syntax\Syntax.xml"/>
         
-        <Content Remove="_old_Antlr" />
-        <Compile Remove="_old_Antlr" />
-        <None Remove="_old_Antlr" />
-        <EmbeddedResource Remove="_old_Antlr" />
+<!--        <Content Remove="_old_Antlr/*" />-->
+        <Compile Remove="_old_Antlr/*" />
+        <Compile Remove="_old_Antlr/Ast/*" />
+<!--        <None Remove="_old_Antlr/*" />-->
+<!--        <EmbeddedResource Remove="_old_Antlr/*" />-->
     </ItemGroup>
     
     <ItemGroup>

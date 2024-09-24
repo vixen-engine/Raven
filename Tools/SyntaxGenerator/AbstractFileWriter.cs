@@ -120,37 +120,18 @@ abstract class AbstractFileWriter {
     }
 
     protected static string StripPost(string name, string post) =>
-        name.EndsWith(post, StringComparison.Ordinal)
-            ? name.Substring(0, name.Length - post.Length)
-            : name;
+        name.EndsWith(post, StringComparison.Ordinal) ? name[..^post.Length] : name;
 
 
-    // TODO: check this as we are not supporting red/green trees??
-    protected static string GetFieldType(Field field, bool green) {
-        // Fields in red trees are lazily initialized, with null as the uninitialized value
-        return GetNullableAwareType(field.Type, field.IsOptional || !green, green);
-
-        static string GetNullableAwareType(string fieldType, bool optionalOrLazy, bool green) {
-            if (IsAnyList(fieldType)) {
-                if (optionalOrLazy) {
-                    return green ? "GreenNode?" : "SyntaxNode?";
-                }
-
-                return green ? "GreenNode?" : "SyntaxNode";
-            }
-
-            switch (fieldType) {
-                case var _ when !optionalOrLazy:
-                    return fieldType;
-
-                case "bool":
-                case "SyntaxToken" when !green:
-                    return fieldType;
-
-                default:
-                    return fieldType + "?";
-            }
+    protected static string GetFieldType(Field field) {
+        if (IsAnyList(field.Type)) {
+            return "SyntaxNode" + (field.IsOptional ? "?" : "");
         }
+
+        return field.Type switch {
+            _ when !field.IsOptional => field.Type,
+            _ => field.Type + "?"
+        };
     }
 
     protected static bool IsSeparatedNodeList(string typeName) =>

@@ -6,8 +6,8 @@
     <AbstractNode Name="NameSyntax" Base="TypeSyntax">
         <TypeComment>
             <summary>
-                Provides the base class from which the classes that represent name syntax nodes are derived. This
-                is an abstract class.
+                Provides the base class from which the classes that represent name syntax nodes are derived.
+                This is an abstract class.
             </summary>
         </TypeComment>
     </AbstractNode>
@@ -87,6 +87,14 @@
         </TypeComment>
     </AbstractNode>
 
+    <AbstractNode Name="PatternSyntax" Base="ExpressionOrPatternSyntax"/>
+    <Node Name="DiscardPatternSyntax" Base="PatternSyntax">
+        <Kind Name="DiscardPattern"/>
+        <Field Name="UnderscoreToken" Type="SyntaxToken">
+            <Kind Name="UnderscoreToken"/>
+        </Field>
+    </Node>
+
 
     <!-- Type Names -->
     <AbstractNode Name="TypeSyntax" Base="ExpressionSyntax">
@@ -98,4 +106,207 @@
         </TypeComment>
     </AbstractNode>
 
+
+    <!-- Declarations -->
+    <Node Name="CompilationUnitSyntax" Base="SyntaxNode">
+        <Kind Name="CompilationUnit"/>
+        <Field Name="Package" Type="PackageDirectiveSyntax"/>
+        <Field Name="Imports" Type="SyntaxList&lt;ImportDirectiveSyntax&gt;"/>
+        <Field Name="Members" Type="SyntaxList&lt;MemberDeclarationSyntax&gt;"/>
+        <Field Name="EndOfFileToken" Type="SyntaxToken">
+            <Kind Name="EndOfFileToken"/>
+        </Field>
+    </Node>
+    <Node Name="PackageDirectiveSyntax" Base="SyntaxNode">
+        <Kind Name="PackageDirective"/>
+        <Field Name="PackageKeyword" Type="SyntaxToken">
+            <Kind Name="PackageKeyword"/>
+        </Field>
+        <Field Name="PackageName" Type="NameSyntax"/>
+        <!--        <Field Name="SemicolonToken" Type="SyntaxToken">-->
+        <!--            <Kind Name="SemicolonToken"/>-->
+        <!--        </Field>-->
+    </Node>
+    <Node Name="ImportDirectiveSyntax" Base="SyntaxNode">
+        <Kind Name="ImportDirective"/>
+        <Field Name="GlobalKeyword" Type="SyntaxToken" Optional="true">
+            <Kind Name="GlobalKeyword"/>
+        </Field>
+        <Field Name="ImportKeyword" Type="SyntaxToken">
+            <Kind Name="ImportKeyword"/>
+        </Field>
+        <Field Name="StaticKeyword" Type="SyntaxToken" Optional="true">
+            <Kind Name="StaticKeyword"/>
+        </Field>
+        <Field Name="Name" Type="NameSyntax"/>
+        <!--        <Field Name="SemicolonToken" Type="SyntaxToken">-->
+        <!--            <Kind Name="SemicolonToken"/>-->
+        <!--        </Field>-->
+    </Node>
+
+    <!--TODO PARSE-->
+    <AbstractNode Name="MemberDeclarationSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Member declaration syntax.</summary>
+        </TypeComment>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;">
+            <PropertyComment>
+                <summary>Gets the attribute declaration list.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;">
+            <PropertyComment>
+                <summary>Gets the modifier list.</summary>
+            </PropertyComment>
+        </Field>
+    </AbstractNode>
+
+    <!-- Attributes -->
+    <!-- TODO PARSE ALL -->
+    <Node Name="AttributeListSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Class representing one or more attributes applied to a language construct.</summary>
+        </TypeComment>
+        <Kind Name="AttributeList"/>
+        <Field Name="OpenBracketToken" Type="SyntaxToken">
+            <Kind Name="OpenBracketToken"/>
+            <PropertyComment>
+                <summary>Gets the open bracket token.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Target" Type="AttributeTargetSpecifierSyntax" Optional="true">
+            <PropertyComment>
+                <summary>Gets the optional construct targeted by the attribute.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Attributes" Type="SeparatedSyntaxList&lt;AttributeSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>Gets the attribute declaration list.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="CloseBracketToken" Type="SyntaxToken">
+            <Kind Name="CloseBracketToken"/>
+            <PropertyComment>
+                <summary>Gets the close bracket token.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+    <Node Name="AttributeTargetSpecifierSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Class representing what language construct an attribute targets.</summary>
+        </TypeComment>
+        <Kind Name="AttributeTargetSpecifier"/>
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the identifier.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="ColonToken" Type="SyntaxToken">
+            <Kind Name="ColonToken"/>
+            <PropertyComment>
+                <summary>Gets the colon token.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+    <Node Name="AttributeSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Attribute syntax.</summary>
+        </TypeComment>
+        <Kind Name="Attribute"/>
+        <Field Name="Name" Type="NameSyntax">
+            <PropertyComment>
+                <summary>Gets the name.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="ArgumentList" Type="AttributeArgumentListSyntax" Optional="true"/>
+    </Node>
+    <Node Name="AttributeArgumentListSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Attribute argument list syntax.</summary>
+        </TypeComment>
+        <Kind Name="AttributeArgumentList"/>
+        <Field Name="OpenParenToken" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the open paren token.</summary>
+            </PropertyComment>
+            <Kind Name="OpenParenToken"/>
+        </Field>
+        <Field Name="Arguments" Type="SeparatedSyntaxList&lt;AttributeArgumentSyntax&gt;">
+            <PropertyComment>
+                <summary>Gets the arguments syntax list.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="CloseParenToken" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the close paren token.</summary>
+            </PropertyComment>
+            <Kind Name="CloseParenToken"/>
+        </Field>
+    </Node>
+    <Node Name="AttributeArgumentSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Attribute argument syntax.</summary>
+        </TypeComment>
+        <Kind Name="AttributeArgument"/>
+        <Choice>
+            <Field Name="NameEquals" Type="NameEqualsSyntax" Optional="true"/>
+            <Field Name="NameColon" Type="NameColonSyntax" Optional="true"/>
+        </Choice>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>Gets the expression.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+
+
+    <Node Name="NameEqualsSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Class representing an identifier name followed by an equals token.</summary>
+        </TypeComment>
+        <Kind Name="NameEquals"/>
+        <Field Name="Name" Type="IdentifierNameSyntax">
+            <PropertyComment>
+                <summary>Gets the identifier name.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierName"/>
+        </Field>
+        <Field Name="EqualsToken" Type="SyntaxToken">
+            <Kind Name="EqualsToken"/>
+        </Field>
+    </Node>
+
+
+    <!-- Expressions -->
+    <AbstractNode Name="BaseExpressionColonSyntax" Base="SyntaxNode">
+        <Field Name="Expression" Type="ExpressionSyntax"/>
+        <Field Name="ColonToken" Type="SyntaxToken">
+            <Kind Name="ColonToken"/>
+        </Field>
+    </AbstractNode>
+    <Node Name="ExpressionColonSyntax" Base="BaseExpressionColonSyntax">
+        <Kind Name="ExpressionColon"/>
+        <Field Name="Expression" Type="ExpressionSyntax" Override="true"/>
+        <Field Name="ColonToken" Type="SyntaxToken" Override="true"/>
+    </Node>
+    <Node Name="NameColonSyntax" Base="BaseExpressionColonSyntax">
+        <Kind Name="NameColon"/>
+        <Field Name="Name" Type="IdentifierNameSyntax">
+            <Kind Name="IdentifierName"/>
+            <PropertyComment>
+                <summary>IdentifierNameSyntax representing the identifier name.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="ColonToken" Type="SyntaxToken" Override="true">
+            <PropertyComment>
+                <summary>SyntaxToken representing colon.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for name colon syntax.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a NameColonSyntax node.</summary>
+        </FactoryComment>
+    </Node>
 </Tree>

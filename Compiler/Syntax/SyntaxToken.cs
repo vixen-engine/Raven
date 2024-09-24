@@ -9,7 +9,10 @@ public class SyntaxToken : SyntaxNode {
         throw new NotImplementedException();
     }
 
-    public object Value { get; }
+    public virtual object Value { get; }
+    
+    // TODO             get { return SyntaxFacts.GetText(this.Kind); }
+    public virtual string Text { get; }
 
     internal SyntaxToken(SyntaxKind kind) : base(kind) {
     }
@@ -18,6 +21,6 @@ public class SyntaxToken : SyntaxNode {
         throw new NotImplementedException();
         // return new(parent, syntaxKind, null!);
     }
-    
-    public override string ToString() => Value.ToString();
+
+    public override string ToString() => Text;
 }

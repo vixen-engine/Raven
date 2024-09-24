@@ -41,6 +41,12 @@ public class ParserTests(ITestOutputHelper log) {
         var tree = SyntaxTree.ParseText(text);
 
         var root = tree.GetRoot();
-        // Assert.IsType<CompilationUnitSyntax>(root);
+        var compilationUnit = Assert.IsType<CompilationUnitSyntax>(root);
+
+        var name = compilationUnit.Package.PackageName as QualifiedNameSyntax;
+        Assert.Equal("Vixen", (name.Left as SimpleNameSyntax).Identifier.Text);
+        Assert.Equal("Test", name.Right.Identifier.Text);
+        
+        Assert.Equal(3, compilationUnit.Imports.Count);
     }
 }

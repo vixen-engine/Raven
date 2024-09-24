@@ -51,7 +51,7 @@ public sealed class SyntaxTree {
         var parser = new RavenParser2(tokenStream);
         
         // Internal visitor to transform ANTLR into Syntax Tree
-        var visitor = new SyntaxAntlrVisitor(syntaxTree);
+        var visitor = new SyntaxAntlrVisitor();
         var tree = parser.compilation_unit();
 
         syntaxTree.root = tree.Accept(visitor);

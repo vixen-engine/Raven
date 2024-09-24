@@ -141,14 +141,13 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                     WriteLine();
                     WriteComment(field.PropertyComment, "");
 
-                    // TODO: verify this
                     if (IsSeparatedNodeList(field.Type) || IsNodeList(field.Type)) {
                         WriteLine(
-                            $"public abstract {(field.IsNew ? "new " : "")}CoreSyntax.{field.Type} {field.Name} {{ get; }}"
+                            $"public abstract {(field.IsNew ? "new " : "")}{field.Type} {field.Name} {{ get; }}"
                         );
                     } else {
                         WriteLine(
-                            $"public abstract {(field.IsNew ? "new " : "")}{GetFieldType(field, true)} {field.Name} {{ get; }}"
+                            $"public abstract {(field.IsNew ? "new " : "")}{GetFieldType(field)} {field.Name} {{ get; }}"
                         );
                     }
 
@@ -217,7 +216,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
             var nodeFields = nNode.Fields.Where(n => IsNodeOrNodeList(n.Type)).ToList();
 
             foreach (var field in nodeFields) {
-                var type = GetFieldType(field, true);
+                var type = GetFieldType(field);
                 WriteLine($"internal readonly {type} {CamelCase(field.Name)};");
             }
 
@@ -269,14 +268,12 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
             foreach (var field in nodeFields) {
                 WriteComment(field.PropertyComment, "");
                 if (IsNodeList(field.Type)) {
-                    var type = $"CoreSyntax.{field.Type}";
                     WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{type} {field.Name} => new {type}(this.{CamelCase(field.Name)});"
+                        $"public {OverrideOrNewModifier(field)}{field.Type} {field.Name} => new(this.{CamelCase(field.Name)});"
                     );
                 } else if (IsSeparatedNodeList(field.Type)) {
-                    var type = $"CoreSyntax.{field.Type}";
                     WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{type} {field.Name} => new {type}(new CoreSyntax.SyntaxList<CSharpSyntaxNode>(this.{CamelCase(field.Name)}));"
+                        $"public {OverrideOrNewModifier(field)}{field.Type} {field.Name} => new(new SyntaxList<SyntaxNode>(this.{CamelCase(field.Name)}));"
                     );
                 } else if (field.Type == "SyntaxNodeOrTokenList") {
                     const string type = "CoreSyntax.SyntaxList<CSharpSyntaxNode>";
@@ -285,7 +282,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                     );
                 } else {
                     WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{GetFieldType(field, true)} {field.Name} => this.{CamelCase(field.Name)};"
+                        $"public {OverrideOrNewModifier(field)}{GetFieldType(field)} {field.Name} => this.{CamelCase(field.Name)};"
                     );
                 }
             }
@@ -491,8 +488,8 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                         var type =
                             f.Type == "SyntaxNodeOrTokenList" ? "CoreSyntax.SyntaxList<CSharpSyntaxNode>" :
                             f.Type == "SyntaxTokenList" ? "CoreSyntax.SyntaxList<SyntaxToken>" :
-                            IsNodeList(f.Type) ? "CoreSyntax." + f.Type :
-                            IsSeparatedNodeList(f.Type) ? "CoreSyntax." + f.Type :
+                            // IsNodeList(f.Type) ? "CoreSyntax." + f.Type :
+                            // IsSeparatedNodeList(f.Type) ? "CoreSyntax." + f.Type :
                             f.Type;
 
                         return $"{type} {CamelCase(f.Name)}";
@@ -561,7 +558,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
 
     void WriteNodeConstructorArgs(List<Field> nodeFields, List<Field> valueFields) {
         foreach (var field in nodeFields) {
-            Write($", {GetFieldType(field, true)} {CamelCase(field.Name)}");
+            Write($", {GetFieldType(field)} {CamelCase(field.Name)}");
         }
 
         foreach (var field in valueFields) {
@@ -570,25 +567,26 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
     }
 
     void WriteCtorBody(Node node, List<Field> valueFields, List<Field> nodeFields) {
-        if (node.Name == "AttributeSyntax") {
-            WriteLine("SetFlags(NodeFlags.ContainsAttributes);");
-        }
+        // TODO
+        // if (node.Name == "AttributeSyntax") {
+        //     WriteLine("SetFlags(NodeFlags.ContainsAttributes);");
+        // }
 
         // constructor body
         WriteLine($"this.SlotCount = {nodeFields.Count};");
 
         foreach (var field in nodeFields) {
-            if (IsAnyList(field.Type) || field.IsOptional) {
-                WriteLine($"if ({CamelCase(field.Name)} != null)");
-                OpenBlock();
-                WriteLine($"this.AdjustFlagsAndWidth({CamelCase(field.Name)});");
-                WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
-                CloseBlock();
-            } else {
-                // TODO?
+            // TODO: Flags??
+            // if (IsAnyList(field.Type) || field.IsOptional) {
+            //     WriteLine($"if ({CamelCase(field.Name)} != null)");
+            //     OpenBlock();
+            //     WriteLine($"this.AdjustFlagsAndWidth({CamelCase(field.Name)});");
+            //     WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
+            //     CloseBlock();
+            // } else {
                 // WriteLine($"this.AdjustFlagsAndWidth({CamelCase(field.Name)});");
                 WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
-            }
+            // }
         }
 
         foreach (var field in valueFields) {
@@ -835,8 +833,8 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                     f => {
                         var type = f.Type switch {
                             "SyntaxNodeOrTokenList" => "CoreSyntax.SyntaxList<CSharpSyntaxNode>",
-                            _ when IsSeparatedNodeList(f.Type) || IsNodeList(f.Type) => $"CoreSyntax.{f.Type}",
-                            _ => GetFieldType(f, true)
+                            _ when IsSeparatedNodeList(f.Type) || IsNodeList(f.Type) => f.Type,
+                            _ => GetFieldType(f)
                         };
 
                         return $"{type} {CamelCase(f.Name)}";

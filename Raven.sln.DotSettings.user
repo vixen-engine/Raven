@@ -8,7 +8,7 @@
     &lt;TestId&gt;xUnit::6022BEBC-D9F5-4F71-A003-20EA824FAA34::net8.0::Tests.ParserTests.Test_SyntaxTree&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=58c56b00_002Df81e_002D48fd_002Da74f_002Dc8e84271fcf4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Continuous Testing" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=58c56b00_002Df81e_002D48fd_002Da74f_002Dc8e84271fcf4/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" IsActive="True" Name="Continuous Testing" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;And&gt;
     &lt;TestAncestor&gt;
       &lt;TestId&gt;xUnit::6022BEBC-D9F5-4F71-A003-20EA824FAA34::net8.0::Tests.ParserTests.TestAntlrParser&lt;/TestId&gt;

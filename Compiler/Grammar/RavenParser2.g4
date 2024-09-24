@@ -12,7 +12,7 @@ package_declaration
     ;
     
 import_directive
-    : GLOBAL? IMPORT STATIC? type NL+
+    : GLOBAL? IMPORT STATIC? name NL+
     ;
 
 
