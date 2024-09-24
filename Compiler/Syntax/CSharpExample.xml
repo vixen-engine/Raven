@@ -673,41 +673,7 @@
             <summary>Creates a ConditionalExpressionSyntax node.</summary>
         </FactoryComment>
     </Node>
-    <AbstractNode Name="InstanceExpressionSyntax" Base="ExpressionSyntax">
-        <TypeComment>
-            <summary>Provides the base class from which the classes that represent instance expression syntax nodes are derived. This is an abstract class.</summary>
-        </TypeComment>
-    </AbstractNode>
-    <Node Name="ThisExpressionSyntax" Base="InstanceExpressionSyntax">
-        <Kind Name="ThisExpression"/>
-        <Field Name="Token" Type="SyntaxToken">
-            <Kind Name="ThisKeyword"/>
-            <PropertyComment>
-                <summary>SyntaxToken representing the this keyword.</summary>
-            </PropertyComment>
-        </Field>
-        <TypeComment>
-            <summary>Class which represents the syntax node for a this expression.</summary>
-        </TypeComment>
-        <FactoryComment>
-            <summary>Creates a ThisExpressionSyntax node.</summary>
-        </FactoryComment>
-    </Node>
-    <Node Name="BaseExpressionSyntax" Base="InstanceExpressionSyntax">
-        <Kind Name="BaseExpression"/>
-        <Field Name="Token" Type="SyntaxToken">
-            <Kind Name="BaseKeyword"/>
-            <PropertyComment>
-                <summary>SyntaxToken representing the base keyword.</summary>
-            </PropertyComment>
-        </Field>
-        <TypeComment>
-            <summary>Class which represents the syntax node for a base expression.</summary>
-        </TypeComment>
-        <FactoryComment>
-            <summary>Creates a BaseExpressionSyntax node.</summary>
-        </FactoryComment>
-    </Node>
+
     <Node Name="LiteralExpressionSyntax" Base="ExpressionSyntax">
         <Kind Name="ArgListExpression"/>
         <Kind Name="NumericLiteralExpression"/>
@@ -1751,13 +1717,7 @@
         </Field>
         <Field Name="Expression" Type="ExpressionSyntax" Optional="false"/>
     </Node>
-    <Node Name="WhenClauseSyntax" Base="CSharpSyntaxNode">
-        <Kind Name="WhenClause" />
-        <Field Name="WhenKeyword" Type="SyntaxToken">
-            <Kind Name="WhenKeyword"/>
-        </Field>
-        <Field Name="Condition" Type="ExpressionSyntax"/>
-    </Node>
+
     <AbstractNode Name="PatternSyntax" Base="ExpressionOrPatternSyntax" />
     <Node Name="DiscardPatternSyntax" Base="PatternSyntax">
         <Kind Name="DiscardPattern" />
@@ -1953,23 +1913,9 @@
         </Field>
         <Field Name="Statement" Type="StatementSyntax"/>
     </Node>
-    <AbstractNode Name="StatementSyntax" Base="CSharpSyntaxNode">
-        <TypeComment>
-            <summary>Represents the base class for all statements syntax classes.</summary>
-        </TypeComment>
-        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;"/>
-    </AbstractNode>
-    <Node Name="BlockSyntax" Base="StatementSyntax">
-        <Kind Name="Block"/>
-        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
-        <Field Name="OpenBraceToken" Type="SyntaxToken">
-            <Kind Name="OpenBraceToken"/>
-        </Field>
-        <Field Name="Statements" Type="SyntaxList&lt;StatementSyntax&gt;"/>
-        <Field Name="CloseBraceToken" Type="SyntaxToken">
-            <Kind Name="CloseBraceToken"/>
-        </Field>
-    </Node>
+
+
+    
     <Node Name="LocalFunctionStatementSyntax" Base="StatementSyntax">
         <Kind Name="LocalFunctionStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>

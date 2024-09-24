@@ -426,14 +426,14 @@ expression
     
 instance_expression
     : base_expression
-    | this_expression
+    | self_expression
     ;
 
 base_expression
     : BASE
     ;
 
-this_expression
+self_expression
     : SELF
     ;
   

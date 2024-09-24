@@ -22,7 +22,6 @@ public enum SyntaxKind : ushort {
     DiscardPattern,
     CompilationUnit,
     PackageDirective,
-    StaticKeyword,
     ImportDirective,
     NameColon,
     ExpressionColon,
@@ -62,7 +61,23 @@ public enum SyntaxKind : ushort {
     // ArgListKeyword
     Parameter,
     ParameterList,
-    BracketedParameterList
+    BracketedParameterList,
+    
+    AbstractKeyword,
+    ConstKeyword,
+    OverrideKeyword,
+    PartialKeyword,
+    PrivateKeyword,
+    ProtectedKeyword,
+    PublicKeyword,
+    ReadOnlyKeyword,
+    StaticKeyword,
+    VirtualKeyword,
+    
+    SelfExpression,
+    BaseExpression,
+    WhenClause,
+    Block,
 }
 
 

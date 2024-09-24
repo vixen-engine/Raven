@@ -308,14 +308,8 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         return SyntaxFactory.IdentifierName(token!);
     }
 
-    public override SyntaxNode VisitBase_property_declaration(RavenParser2.Base_property_declarationContext context) =>
-        base.VisitBase_property_declaration(context);
-
     public override SyntaxNode VisitField_declaration(RavenParser2.Field_declarationContext context) =>
         base.VisitField_declaration(context);
-
-    public override SyntaxNode VisitBase_method_declaration(RavenParser2.Base_method_declarationContext context) =>
-        base.VisitBase_method_declaration(context);
 
     public override SyntaxNode VisitConstructor_declaration(RavenParser2.Constructor_declarationContext context) =>
         base.VisitConstructor_declaration(context);
@@ -361,12 +355,6 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
 
     public override SyntaxNode VisitOperator_declaration(RavenParser2.Operator_declarationContext context) =>
         base.VisitOperator_declaration(context);
-
-    public override SyntaxNode VisitBase_type_declaration(RavenParser2.Base_type_declarationContext context) =>
-        base.VisitBase_type_declaration(context);
-
-    public override SyntaxNode VisitType_declaration(RavenParser2.Type_declarationContext context) =>
-        base.VisitType_declaration(context);
 
     public override SyntaxNode VisitClass_declaration(RavenParser2.Class_declarationContext context) =>
         base.VisitClass_declaration(context);
@@ -458,9 +446,10 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         return SyntaxFactory.BracketedArgumentList(new(SyntaxList.List(args)));
     }
 
-    public override SyntaxNode VisitBlock(RavenParser2.BlockContext context) => base.VisitBlock(context);
-
-    public override SyntaxNode VisitStatement(RavenParser2.StatementContext context) => base.VisitStatement(context);
+    public override SyntaxNode VisitBlock(RavenParser2.BlockContext context) {
+        var statements = context.statement().Select(Visit).ToArray();
+        return SyntaxFactory.Block(new(), new(SyntaxList.List(statements)));
+    }
 
     public override SyntaxNode VisitBreak_statement(RavenParser2.Break_statementContext context) =>
         base.VisitBreak_statement(context);
@@ -508,9 +497,6 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
     public override SyntaxNode VisitSwitch_section(RavenParser2.Switch_sectionContext context) =>
         base.VisitSwitch_section(context);
 
-    public override SyntaxNode VisitSwitch_label(RavenParser2.Switch_labelContext context) =>
-        base.VisitSwitch_label(context);
-
     public override SyntaxNode VisitCase_pattern_switch_label(RavenParser2.Case_pattern_switch_labelContext context) =>
         base.VisitCase_pattern_switch_label(context);
 
@@ -522,29 +508,19 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
 
     public override SyntaxNode VisitExpression(RavenParser2.ExpressionContext context) => base.VisitExpression(context);
 
-    public override SyntaxNode VisitInstance_expression(RavenParser2.Instance_expressionContext context) =>
-        base.VisitInstance_expression(context);
-
     public override SyntaxNode VisitBase_expression(RavenParser2.Base_expressionContext context) =>
-        base.VisitBase_expression(context);
+        SyntaxFactory.BaseExpression();
 
-    public override SyntaxNode VisitThis_expression(RavenParser2.This_expressionContext context) =>
-        base.VisitThis_expression(context);
+    public override SyntaxNode VisitSelf_expression(RavenParser2.Self_expressionContext context) =>
+        SyntaxFactory.SelfExpression();
 
     public override SyntaxNode VisitLiteral_expression(RavenParser2.Literal_expressionContext context) =>
         base.VisitLiteral_expression(context);
 
-    public override SyntaxNode VisitAnonymous_function_expression(
-        RavenParser2.Anonymous_function_expressionContext context
-    ) =>
-        base.VisitAnonymous_function_expression(context);
 
     public override SyntaxNode
         VisitAnonymous_method_expression(RavenParser2.Anonymous_method_expressionContext context) =>
         base.VisitAnonymous_method_expression(context);
-
-    public override SyntaxNode VisitLambda_expression(RavenParser2.Lambda_expressionContext context) =>
-        base.VisitLambda_expression(context);
 
     public override SyntaxNode VisitParenthesized_lambda_expression(
         RavenParser2.Parenthesized_lambda_expressionContext context
@@ -584,8 +560,10 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
     public override SyntaxNode VisitVariable_designation(RavenParser2.Variable_designationContext context) =>
         base.VisitVariable_designation(context);
 
-    public override SyntaxNode VisitWhen_clause(RavenParser2.When_clauseContext context) =>
-        base.VisitWhen_clause(context);
+    public override SyntaxNode VisitWhen_clause(RavenParser2.When_clauseContext context) {
+        var condition = Visit(context.expression()) as ExpressionSyntax;
+        return SyntaxFactory.WhenClause(condition!);
+    }
 
     public override SyntaxNode VisitType(RavenParser2.TypeContext context) => base.VisitType(context);
 
@@ -657,9 +635,6 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         throw new ArgumentOutOfRangeException();
     }
 
-    public override SyntaxNode VisitString_literal_token(RavenParser2.String_literal_tokenContext context) =>
-        base.VisitString_literal_token(context);
-
     public override SyntaxNode VisitRegular_string_literal_token(
         RavenParser2.Regular_string_literal_tokenContext context
     ) =>
@@ -706,5 +681,51 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
 
     public override SyntaxNode VisitKeyword(RavenParser2.KeywordContext context) => base.VisitKeyword(context);
 
-    public override SyntaxNode VisitModifier(RavenParser2.ModifierContext context) => base.VisitModifier(context);
+    public override SyntaxNode VisitModifier(RavenParser2.ModifierContext context) {
+        if (context.ABSTRACT() != null) {
+            return new SyntaxToken(SyntaxKind.AbstractKeyword);
+        }
+        
+        if (context.ABSTRACT() != null) {
+            return new SyntaxToken(SyntaxKind.AbstractKeyword);
+        }
+        
+        if (context.CONST() != null) {
+            return new SyntaxToken(SyntaxKind.ConstKeyword);
+        }
+        
+        if (context.OVERRIDE() != null) {
+            return new SyntaxToken(SyntaxKind.OverrideKeyword);
+        }
+        
+        if (context.PARTIAL() != null) {
+            return new SyntaxToken(SyntaxKind.PartialKeyword);
+        }
+        
+        if (context.PRIVATE() != null) {
+            return new SyntaxToken(SyntaxKind.PrivateKeyword);
+        }
+        
+        if (context.PROTECTED() != null) {
+            return new SyntaxToken(SyntaxKind.ProtectedKeyword);
+        }
+        
+        if (context.PUBLIC() != null) {
+            return new SyntaxToken(SyntaxKind.PublicKeyword);
+        }
+        
+        if (context.READONLY() != null) {
+            return new SyntaxToken(SyntaxKind.ReadOnlyKeyword);
+        }
+        
+        if (context.STATIC() != null) {
+            return new SyntaxToken(SyntaxKind.StaticKeyword);
+        }
+        
+        if (context.VIRTUAL() != null) {
+            return new SyntaxToken(SyntaxKind.VirtualKeyword);
+        }
+
+        throw new ArgumentOutOfRangeException();
+    }
 }

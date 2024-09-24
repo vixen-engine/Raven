@@ -138,6 +138,62 @@
     <Node Name="DiscardPatternSyntax" Base="PatternSyntax">
         <Kind Name="DiscardPattern"/>
     </Node>
+    <AbstractNode Name="BaseExpressionColonSyntax" Base="SyntaxNode">
+        <Field Name="Expression" Type="ExpressionSyntax"/>
+    </AbstractNode>
+    <!-- TODO PARSE -->
+    <Node Name="ExpressionColonSyntax" Base="BaseExpressionColonSyntax">
+        <Kind Name="ExpressionColon"/>
+        <Field Name="Expression" Type="ExpressionSyntax" Override="true"/>
+    </Node>
+    <Node Name="NameColonSyntax" Base="BaseExpressionColonSyntax">
+        <Kind Name="NameColon"/>
+        <Field Name="Name" Type="IdentifierNameSyntax">
+            <Kind Name="IdentifierName"/>
+            <PropertyComment>
+                <summary>IdentifierNameSyntax representing the identifier name.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for name colon syntax.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a NameColonSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    
+    <AbstractNode Name="InstanceExpressionSyntax" Base="ExpressionSyntax">
+        <TypeComment>
+            <summary>
+                Provides the base class from which the classes that represent instance expression syntax nodes are derived.
+                This is an abstract class.
+            </summary>
+        </TypeComment>
+    </AbstractNode>
+    <Node Name="SelfExpressionSyntax" Base="InstanceExpressionSyntax">
+        <Kind Name="SelfExpression"/>
+        <TypeComment>
+            <summary>Class which represents the syntax node for a "self" expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a SelfExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="BaseExpressionSyntax" Base="InstanceExpressionSyntax">
+        <Kind Name="BaseExpression"/>
+        <TypeComment>
+            <summary>Class which represents the syntax node for a base expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a BaseExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+
+
+    <Node Name="WhenClauseSyntax" Base="SyntaxNode">
+        <Kind Name="WhenClause" />
+        <Field Name="Condition" Type="ExpressionSyntax"/>
+    </Node>
 
 
     <!-- Type Names -->
@@ -299,31 +355,6 @@
     </Node>
 
 
-    <!-- Expressions -->
-    <AbstractNode Name="BaseExpressionColonSyntax" Base="SyntaxNode">
-        <Field Name="Expression" Type="ExpressionSyntax"/>
-    </AbstractNode>
-    <!-- TODO PARSE -->
-    <Node Name="ExpressionColonSyntax" Base="BaseExpressionColonSyntax">
-        <Kind Name="ExpressionColon"/>
-        <Field Name="Expression" Type="ExpressionSyntax" Override="true"/>
-    </Node>
-    <Node Name="NameColonSyntax" Base="BaseExpressionColonSyntax">
-        <Kind Name="NameColon"/>
-        <Field Name="Name" Type="IdentifierNameSyntax">
-            <Kind Name="IdentifierName"/>
-            <PropertyComment>
-                <summary>IdentifierNameSyntax representing the identifier name.</summary>
-            </PropertyComment>
-        </Field>
-        <TypeComment>
-            <summary>Class which represents the syntax node for name colon syntax.</summary>
-        </TypeComment>
-        <FactoryComment>
-            <summary>Creates a NameColonSyntax node.</summary>
-        </FactoryComment>
-    </Node>
-    
     
     <!-- Types -->
     <AbstractNode Name="BaseTypeSyntax" Base="SyntaxNode">
@@ -468,5 +499,20 @@
         <FactoryComment>
             <summary>Creates an ArgumentSyntax node.</summary>
         </FactoryComment>
+    </Node>
+    
+    
+    <!-- TODO: Can block have attributes? it's not currently implemented in ANTLR -->
+    <!-- Statements -->
+    <AbstractNode Name="StatementSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Represents the base class for all statements' syntax classes.</summary>
+        </TypeComment>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;"/>
+    </AbstractNode>
+    <Node Name="BlockSyntax" Base="StatementSyntax">
+        <Kind Name="Block"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Statements" Type="SyntaxList&lt;StatementSyntax&gt;"/>
     </Node>
 </Tree>
