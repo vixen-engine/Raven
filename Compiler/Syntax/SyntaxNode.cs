@@ -11,6 +11,7 @@ public abstract class SyntaxNode {
     public IEnumerable<SyntaxNodeOrToken> ChildNodesOrTokens => children;
     public IEnumerable<SyntaxNode> ChildNodes => children.Where(x => x.Node != null).Select(x => x.Node!);
     // public IEnumerable<SyntaxToken> ChildTokens => children.Where(x => x.Token != null).Select(x => x.Token!.Value);
+    
 
     internal SyntaxNode(SyntaxKind kind) {
         Kind = kind;

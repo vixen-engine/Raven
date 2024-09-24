@@ -4,7 +4,7 @@ import Vixen.Core
 import Vixen.BaseShaders
 
 // Test shader
-[FooBar]
+[FooBar, BarFoo]
 shader TestShader : ExampleBase, CustomShader {
     const val Multiplier = 42
     var test = "str"

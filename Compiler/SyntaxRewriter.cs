@@ -3,6 +3,12 @@ using Vixen.Raven.Syntax;
 namespace Vixen.Raven;
 
 public partial class SyntaxRewriter {
+    // TODO: check this as I made this
+    // public SeparatedSyntaxList<TNode> VisitList<TNode>(SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode {
+    //     throw new NotImplementedException();
+    // }
+    
+
     public SyntaxList<TNode> VisitList<TNode>(SyntaxList<TNode> list) where TNode : SyntaxNode {
         // TODO: review how to implement this
         

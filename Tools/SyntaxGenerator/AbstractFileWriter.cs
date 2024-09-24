@@ -12,7 +12,7 @@ abstract class AbstractFileWriter {
     readonly TextWriter writer;
 
     protected Tree Tree { get; }
-    protected CancellationToken CancellationToken { get; }
+    CancellationToken CancellationToken { get; }
 
     protected AbstractFileWriter(TextWriter writer, Tree tree, CancellationToken cancellationToken) {
         this.writer = writer;
@@ -25,16 +25,7 @@ abstract class AbstractFileWriter {
         parentMap.Add(tree.Root, null!);
     }
 
-    public static bool IsAnyNodeList(string typeName) => IsNodeList(typeName) || IsSeparatedNodeList(typeName);
-
-    void WriteIndentIfNeeded() {
-        if (needIndent) {
-            writer.Write(new string(' ', indentLevel * IndentSize));
-            needIndent = false;
-        }
-    }
-
-    static bool IsKeyword(string name) {
+    static bool IsCSharpKeyword(string name) {
         switch (name) {
             case "bool":
             case "byte":
@@ -119,37 +110,12 @@ abstract class AbstractFileWriter {
         }
     }
 
-    protected static string StripPost(string name, string post) =>
-        name.EndsWith(post, StringComparison.Ordinal) ? name[..^post.Length] : name;
-
-
     protected static string GetFieldType(Field field) {
-        if (IsAnyList(field.Type)) {
+        if (IsNodeList(field.Type)) {
             return "SyntaxNode" + (field.IsOptional ? "?" : "");
         }
 
-        return field.Type switch {
-            _ when !field.IsOptional => field.Type,
-            _ => field.Type + "?"
-        };
-    }
-
-    protected static bool IsSeparatedNodeList(string typeName) =>
-        typeName.StartsWith("SeparatedSyntaxList<", StringComparison.Ordinal);
-
-    protected static bool IsNodeList(string typeName) => typeName.StartsWith("SyntaxList<", StringComparison.Ordinal);
-
-    protected static bool IsAnyList(string typeName) =>
-        IsNodeList(typeName) || IsSeparatedNodeList(typeName) || typeName == "SyntaxNodeOrTokenList";
-
-    protected static string FixKeyword(string name) => IsKeyword(name) ? "@" + name : name;
-
-    protected static string CamelCase(string name) {
-        if (char.IsUpper(name[0])) {
-            name = char.ToLowerInvariant(name[0]) + name[1..];
-        }
-
-        return FixKeyword(name);
+        return field.Type + (field.IsOptional ? "?" : string.Empty);
     }
 
     protected static string GetElementType(string typeName) {
@@ -167,11 +133,7 @@ abstract class AbstractFileWriter {
         return sub;
     }
 
-    protected static string OverrideOrNewModifier(Field field) =>
-        field.IsOverride ? "override " : field.IsNew ? "new " : "";
-
-
-    protected bool IsDerivedType(string? typeName, string? derivedTypeName) {
+    bool IsDerivedType(string? typeName, string? derivedTypeName) {
         if (typeName == derivedTypeName) {
             return true;
         }
@@ -185,12 +147,13 @@ abstract class AbstractFileWriter {
 
     protected bool IsDerivedOrListOfDerived(string baseType, string derivedType) =>
         IsDerivedType(baseType, derivedType)
-        || ((IsNodeList(derivedType) || IsSeparatedNodeList(derivedType))
-            && IsDerivedType(baseType, GetElementType(derivedType)));
+        || (IsNodeList(derivedType) && IsDerivedType(baseType, GetElementType(derivedType)));
 
     protected TreeType? GetTreeType(string typeName) => typeMap.TryGetValue(typeName, out var node) ? node : null;
 
-    protected Node? GetNode(string typeName) => nodeMap.TryGetValue(typeName, out var node) ? node : null;
+    protected bool IsValueField(Field field) => !IsNodeOrNodeList(field.Type);
+
+    #region Write Helpers
 
     protected void Indent() => indentLevel++;
 
@@ -200,6 +163,13 @@ abstract class AbstractFileWriter {
         }
 
         indentLevel--;
+    }
+
+    void WriteIndentIfNeeded() {
+        if (needIndent) {
+            writer.Write(new string(' ', indentLevel * IndentSize));
+            needIndent = false;
+        }
     }
 
     protected void Write(string msg) {
@@ -223,14 +193,6 @@ abstract class AbstractFileWriter {
         needIndent = true; // need an indent after each line break
     }
 
-    /// <summary>
-    ///     Joins all the values together in <paramref name="values" /> into one string with each
-    ///     value separated by a comma.  Values can be either <see cref="string" />s or
-    ///     <see
-    ///         cref="IEnumerable{T}" />
-    ///     s of <see cref="string" />.  All of these are flattened into a
-    ///     single sequence that is joined. Empty strings are ignored.
-    /// </summary>
     protected string CommaJoin(params object[] values) => Join(", ", values);
 
     protected string Join(string separator, params object[] values) =>
@@ -255,12 +217,27 @@ abstract class AbstractFileWriter {
         WriteLine("}" + extra);
     }
 
-    protected bool IsNodeOrNodeList(string typeName) =>
-        IsNode(typeName)
-        || IsNodeList(typeName)
-        || IsSeparatedNodeList(typeName)
-        || typeName == "SyntaxNodeOrTokenList";
+    protected static string StripPost(string name, string post) =>
+        name.EndsWith(post, StringComparison.Ordinal) ? name[..^post.Length] : name;
 
+    static string FixKeyword(string name) => IsCSharpKeyword(name) ? "@" + name : name;
+
+    protected static string CamelCase(string name) {
+        if (char.IsUpper(name[0])) {
+            name = char.ToLowerInvariant(name[0]) + name[1..];
+        }
+
+        return FixKeyword(name);
+    }
+
+    #endregion
+
+    #region Node List Helpers
+
+    protected Node? GetNode(string typeName) => nodeMap.TryGetValue(typeName, out var node) ? node : null;
+    public static bool IsNodeList(string typeName) => typeName.StartsWith("SyntaxList<", StringComparison.Ordinal);
     protected bool IsNode(string typeName) => parentMap.ContainsKey(typeName);
-    protected bool IsValueField(Field field) => !IsNodeOrNodeList(field.Type);
+    protected bool IsNodeOrNodeList(string typeName) => IsNode(typeName) || IsNodeList(typeName);
+
+    #endregion
 }

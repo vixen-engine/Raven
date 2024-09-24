@@ -24,7 +24,7 @@ public static class TreeFlattening {
         foreach (var fieldOrChoice in fieldsAndChoices) {
             switch (fieldOrChoice) {
                 case Field field:
-                    if (makeOptional && !AbstractFileWriter.IsAnyNodeList(field.Type)) {
+                    if (makeOptional && !AbstractFileWriter.IsNodeList(field.Type)) {
                         field.Optional = "true";
                     }
 

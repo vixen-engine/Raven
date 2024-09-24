@@ -53,7 +53,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         };
 
     bool IsRequiredFactoryField(Node node, Field field) =>
-        (!field.IsOptional && !IsAnyList(field.Type) && !CanBeAutoCreated(node, field)) || IsValueField(field);
+        (!field.IsOptional && !IsNodeList(field.Type) && !CanBeAutoCreated(node, field)) || IsValueField(field);
 
     bool CanBeAutoCreated(Node node, Field field) => IsAutoCreatableToken(node, field) || IsAutoCreatableNode(field);
 
@@ -69,11 +69,11 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         return referencedNode != null && RequiredFactoryArgumentCount(referencedNode) == 0;
     }
 
-    int RequiredFactoryArgumentCount(Node nd, bool includeKind = true) {
+    int RequiredFactoryArgumentCount(Node nd) {
         var count = 0;
 
         // kind must be specified in the factory
-        if (nd.Kinds.Count > 1 && includeKind) {
+        if (nd.Kinds.Count > 1) {
             count++;
         }
 
@@ -90,10 +90,10 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         return null;
     }
 
-    string GetRedPropertyType(Field field) {
-        if (field.Type == "SyntaxList<SyntaxToken>") {
-            return "SyntaxTokenList";
-        }
+    string GetPropertyType(Field field) {
+        // if (field.Type == "SyntaxList<SyntaxToken>") {
+        //     return "SyntaxTokenList";
+        // }
 
         if (field.IsOptional && IsNode(field.Type) && field.Type != "SyntaxToken") {
             return field.Type + "?";
@@ -141,10 +141,8 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                     WriteLine();
                     WriteComment(field.PropertyComment, "");
 
-                    if (IsSeparatedNodeList(field.Type) || IsNodeList(field.Type)) {
-                        WriteLine(
-                            $"public abstract {(field.IsNew ? "new " : "")}{field.Type} {field.Name} {{ get; }}"
-                        );
+                    if (IsNodeList(field.Type)) {
+                        WriteLine($"public abstract {(field.IsNew ? "new " : "")}{field.Type} {field.Name} {{ get; }}");
                     } else {
                         WriteLine(
                             $"public abstract {(field.IsNew ? "new " : "")}{GetFieldType(field)} {field.Name} {{ get; }}"
@@ -162,31 +160,32 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                         $"internal abstract {node.Name} With{field.Name}Core({field.Type} {CamelCase(field.Name)});"
                     );
 
-                    if (IsAnyList(field.Type)) {
-                        var argType = GetElementType(field.Type);
-                        WriteLine();
-                        WriteLine(
-                            $"public {node.Name} Add{field.Name}(params {argType}[] items) => Add{field.Name}Core(items);"
-                        );
-                        WriteLine($"internal abstract {node.Name} Add{field.Name}Core(params {argType}[] items);");
-                    } else {
-                        var referencedNode = TryGetNodeForNestedList(field);
-                        if (referencedNode != null) {
-                            foreach (var referencedNodeField in referencedNode.Fields) {
-                                if (IsAnyList(referencedNodeField.Type)) {
-                                    var argType = GetElementType(referencedNodeField.Type);
-
-                                    WriteLine();
-                                    WriteLine(
-                                        $"public {node.Name} Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}(params {argType}[] items) => Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}Core(items);"
-                                    );
-                                    WriteLine(
-                                        $"internal abstract {node.Name} Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}Core(params {argType}[] items);"
-                                    );
-                                }
-                            }
-                        }
-                    }
+                    // TODO Add*
+                    // if (IsAnyList(field.Type)) {
+                    //     var argType = GetElementType(field.Type);
+                    //     WriteLine();
+                    //     WriteLine(
+                    //         $"public {node.Name} Add{field.Name}(params {argType}[] items) => Add{field.Name}Core(items);"
+                    //     );
+                    //     WriteLine($"internal abstract {node.Name} Add{field.Name}Core(params {argType}[] items);");
+                    // } else {
+                    //     var referencedNode = TryGetNodeForNestedList(field);
+                    //     if (referencedNode != null) {
+                    //         foreach (var referencedNodeField in referencedNode.Fields) {
+                    //             if (IsAnyList(referencedNodeField.Type)) {
+                    //                 var argType = GetElementType(referencedNodeField.Type);
+                    //
+                    //                 WriteLine();
+                    //                 WriteLine(
+                    //                     $"public {node.Name} Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}(params {argType}[] items) => Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}Core(items);"
+                    //                 );
+                    //                 WriteLine(
+                    //                     $"internal abstract {node.Name} Add{StripPost(field.Name, "Opt")}{referencedNodeField.Name}Core(params {argType}[] items);"
+                    //                 );
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
             }
 
@@ -269,20 +268,11 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                 WriteComment(field.PropertyComment, "");
                 if (IsNodeList(field.Type)) {
                     WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{field.Type} {field.Name} => new(this.{CamelCase(field.Name)});"
-                    );
-                } else if (IsSeparatedNodeList(field.Type)) {
-                    WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{field.Type} {field.Name} => new(new SyntaxList<SyntaxNode>(this.{CamelCase(field.Name)}));"
-                    );
-                } else if (field.Type == "SyntaxNodeOrTokenList") {
-                    const string type = "CoreSyntax.SyntaxList<CSharpSyntaxNode>";
-                    WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{type} {field.Name} => new {type}(this.{CamelCase(field.Name)});"
+                        $"public {field.OverrideOrNewModifier}{field.Type} {field.Name} => new(this.{CamelCase(field.Name)});"
                     );
                 } else {
                     WriteLine(
-                        $"public {OverrideOrNewModifier(field)}{GetFieldType(field)} {field.Name} => this.{CamelCase(field.Name)};"
+                        $"public {field.OverrideOrNewModifier}{GetFieldType(field)} {field.Name} => this.{CamelCase(field.Name)};"
                     );
                 }
             }
@@ -290,7 +280,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
             foreach (var field in valueFields) {
                 WriteComment(field.PropertyComment, "");
                 WriteLine(
-                    $"public {OverrideOrNewModifier(field)}{field.Type} {field.Name} => this.{CamelCase(field.Name)};"
+                    $"public {field.OverrideOrNewModifier}{field.Type} {field.Name} => this.{CamelCase(field.Name)};"
                 );
             }
 
@@ -335,26 +325,28 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
     void WriteListHelperMethods(Node node) {
         var wroteNewLine = false;
         foreach (var field in node.Fields) {
-            if (IsAnyList(field.Type)) {
+            if (IsNodeList(field.Type)) {
                 if (!wroteNewLine) {
                     WriteLine();
                     wroteNewLine = true;
                 }
 
                 // write list helper methods for list properties
-                WriteListHelperMethods(node, field);
+                // TODO
+                // WriteListHelperMethods(node, field);
             } else {
                 var referencedNode = TryGetNodeForNestedList(field);
                 if (referencedNode != null) {
                     // look for list members...
                     foreach (var referencedNodeField in referencedNode.Fields) {
-                        if (IsAnyList(referencedNodeField.Type)) {
+                        if (IsNodeList(referencedNodeField.Type)) {
                             if (!wroteNewLine) {
                                 WriteLine();
                                 wroteNewLine = true;
                             }
 
-                            WriteNestedListHelperMethods(node, field, referencedNode, referencedNodeField);
+                            // TODO
+                            // WriteNestedListHelperMethods(node, field, referencedNode, referencedNodeField);
                         }
                     }
                 }
@@ -420,7 +412,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
 
     void WriteWithMethods(Node node) {
         foreach (var field in node.Fields) {
-            var type = GetRedPropertyType(field);
+            var type = GetPropertyType(field);
 
             if (field == node.Fields.First()) {
                 WriteLine();
@@ -431,7 +423,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                 var (baseType, baseField) = GetHighestBaseTypeWithField(node, field.Name);
                 if (baseType != null) {
                     Write(
-                        $"internal override {baseType.Name} With{field.Name}Core({GetRedPropertyType(baseField!)} {CamelCase(field.Name)}) => With{field.Name}({CamelCase(field.Name)}"
+                        $"internal override {baseType.Name} With{field.Name}Core({GetPropertyType(baseField!)} {CamelCase(field.Name)}) => With{field.Name}({CamelCase(field.Name)}"
                     );
 
                     if (baseField!.Type != "SyntaxToken" && baseField.IsOptional && !field.IsOptional) {
@@ -481,65 +473,53 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
     void WriteUpdateMethod(Node node) {
         WriteLine();
         Write($"public {node.Name} Update(");
-        Write(
-            CommaJoin(
-                node.Fields.Select(
-                    f => {
-                        var type =
-                            f.Type == "SyntaxNodeOrTokenList" ? "CoreSyntax.SyntaxList<CSharpSyntaxNode>" :
-                            f.Type == "SyntaxTokenList" ? "CoreSyntax.SyntaxList<SyntaxToken>" :
-                            // IsNodeList(f.Type) ? "CoreSyntax." + f.Type :
-                            // IsSeparatedNodeList(f.Type) ? "CoreSyntax." + f.Type :
-                            f.Type;
-
-                        return $"{type} {CamelCase(f.Name)}";
-                    }
-                )
-            )
-        );
+        Write(CommaJoin(node.Fields.Select(f => $"{f.Type} {CamelCase(f.Name)}")));
         Write(")");
         OpenBlock();
 
-        Write("if (");
-        var nCompared = 0;
-        foreach (var field in node.Fields) {
-            if (
-                IsDerivedOrListOfDerived("SyntaxNode", field.Type)
-                || IsDerivedOrListOfDerived("SyntaxToken", field.Type)
-                || field.Type == "SyntaxNodeOrTokenList"
-            ) {
-                if (nCompared > 0) {
-                    Write(" || ");
+        if (node.Fields.Count > 0) {
+            Write("if (");
+            var nCompared = 0;
+            foreach (var field in node.Fields) {
+                if (
+                    IsDerivedOrListOfDerived("SyntaxNode", field.Type)
+                    || IsDerivedOrListOfDerived("SyntaxToken", field.Type)
+                    || field.Type == "SyntaxNodeOrTokenList"
+                ) {
+                    if (nCompared > 0) {
+                        Write(" || ");
+                    }
+
+                    Write($"{CamelCase(field.Name)} != {field.Name}");
+                    nCompared++;
                 }
-
-                Write($"{CamelCase(field.Name)} != {field.Name}");
-                nCompared++;
             }
+
+            if (nCompared > 0) {
+                Write(")");
+                OpenBlock();
+                Write($"var newNode = SyntaxFactory.{StripPost(node.Name, "Syntax")}(");
+                Write(
+                    CommaJoin(
+                        node.Kinds.Count > 1 ? "this.Kind" : "",
+                        node.Fields.Select(f => CamelCase(f.Name))
+                    )
+                );
+                WriteLine(");");
+
+                // WriteLine("var diags = GetDiagnostics();");
+                // WriteLine("if (diags?.Length > 0)");
+                // WriteLine("    newNode = newNode.WithDiagnosticsGreen(diags);");
+                // WriteLine("var annotations = GetAnnotations();");
+                // WriteLine("if (annotations?.Length > 0)");
+                // WriteLine("    newNode = newNode.WithAnnotationsGreen(annotations);");
+                WriteLine("return newNode;");
+                CloseBlock();
+            }
+
+            WriteLine();
         }
 
-        if (nCompared > 0) {
-            Write(")");
-            OpenBlock();
-            Write($"var newNode = SyntaxFactory.{StripPost(node.Name, "Syntax")}(");
-            Write(
-                CommaJoin(
-                    node.Kinds.Count > 1 ? "this.Kind" : "",
-                    node.Fields.Select(f => CamelCase(f.Name))
-                )
-            );
-            WriteLine(");");
-
-            // WriteLine("var diags = GetDiagnostics();");
-            // WriteLine("if (diags?.Length > 0)");
-            // WriteLine("    newNode = newNode.WithDiagnosticsGreen(diags);");
-            // WriteLine("var annotations = GetAnnotations();");
-            // WriteLine("if (annotations?.Length > 0)");
-            // WriteLine("    newNode = newNode.WithAnnotationsGreen(annotations);");
-            WriteLine("return newNode;");
-            CloseBlock();
-        }
-
-        WriteLine();
         WriteLine("return this;");
         CloseBlock();
     }
@@ -552,7 +532,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
 
         // TODO: Fix nullable
         WriteLine(
-            $"public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor) => visitor.Visit{StripPost(node.Name, "Syntax")}(this);"
+            $"public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor) => visitor.Visit{StripPost(node.Name, "Syntax")}(this)!;"
         );
     }
 
@@ -584,8 +564,8 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
             //     WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
             //     CloseBlock();
             // } else {
-                // WriteLine($"this.AdjustFlagsAndWidth({CamelCase(field.Name)});");
-                WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
+            // WriteLine($"this.AdjustFlagsAndWidth({CamelCase(field.Name)});");
+            WriteLine($"this.{CamelCase(field.Name)} = {CamelCase(field.Name)};");
             // }
         }
 
@@ -638,12 +618,12 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                     CommaJoin(
                         node.Fields.Select(
                             f => {
-                                if (IsAnyList(f.Type)) {
+                                if (IsNodeList(f.Type)) {
                                     return $"VisitList(node.{f.Name})";
                                 }
 
                                 if (IsNode(f.Type)) {
-                                    return $"({f.Type})Visit(node.{f.Name})";
+                                    return $"({f.Type})Visit(node.{f.Name})!";
                                 }
 
                                 return $"node.{f.Name}";
@@ -728,7 +708,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         foreach (var field in nodeFields) {
             var pName = CamelCase(field.Name);
 
-            if (!IsAnyList(field.Type) && !field.IsOptional) {
+            if (!IsNodeList(field.Type) && !field.IsOptional) {
                 WriteLine($"ArgumentNullException.ThrowIfNull({CamelCase(field.Name)});");
             }
 
@@ -832,8 +812,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
                 nd.Fields.Select(
                     f => {
                         var type = f.Type switch {
-                            "SyntaxNodeOrTokenList" => "CoreSyntax.SyntaxList<CSharpSyntaxNode>",
-                            _ when IsSeparatedNodeList(f.Type) || IsNodeList(f.Type) => f.Type,
+                            _ when IsNodeList(f.Type) => f.Type,
                             _ => GetFieldType(f)
                         };
 
@@ -848,12 +827,7 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         Write(
             CommaJoin(
                 nd.Kinds.Count == 1 ? $"SyntaxKind.{nd.Kinds[0].Name}" : "kind",
-                nodeFields.Select(
-                    f =>
-                        f.Type == "SyntaxList<SyntaxToken>" || IsAnyList(f.Type)
-                            ? $"{CamelCase(f.Name)}.Node"
-                            : CamelCase(f.Name)
-                ),
+                nodeFields.Select(f => IsNodeList(f.Type) ? $"{CamelCase(f.Name)}.Node!" : CamelCase(f.Name)),
                 // values are at the end
                 valueFields.Select(f => CamelCase(f.Name)),
                 withSyntaxFactoryContext ? "this.context" : ""

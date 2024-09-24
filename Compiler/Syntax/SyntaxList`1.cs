@@ -2,6 +2,10 @@ using System.Diagnostics;
 
 namespace Vixen.Raven.Syntax;
 
+/// <summary>
+///     This is a wrapper around non-generic SyntaxList
+/// </summary>
+/// <typeparam name="TNode"></typeparam>
 public readonly struct SyntaxList<TNode> : IEquatable<SyntaxList<TNode>> where TNode : SyntaxNode {
     public int Count => Node == null ? 0 : Node.Kind == SyntaxKind.ListKind ? Node.SlotCount : 1;
     internal SyntaxNode? Node { get; }
@@ -49,9 +53,13 @@ public readonly struct SyntaxList<TNode> : IEquatable<SyntaxList<TNode>> where T
     public bool Equals(SyntaxList<TNode> other) => Node == other.Node;
     public override bool Equals(object? obj) => obj is SyntaxList<TNode> list && Equals(list);
     public override int GetHashCode() => Node != null ? Node.GetHashCode() : 0;
-    
+
     public static implicit operator SyntaxList<TNode>(TNode node) => new(node);
 
+
+    public SyntaxList<TNode> AddRange(IEnumerable<TNode> nodes) => throw new NotImplementedException();
+
+    // return this.InsertRange(this.Count, nodes);
     public struct Enumerator {
         readonly SyntaxList<TNode> list;
         int index;
@@ -72,13 +80,5 @@ public readonly struct SyntaxList<TNode> : IEquatable<SyntaxList<TNode>> where T
 
             return false;
         }
-    }
-    
-    
-    
-    public SyntaxList<TNode> AddRange(IEnumerable<TNode> nodes)
-    {
-        throw new NotImplementedException();
-        // return this.InsertRange(this.Count, nodes);
     }
 }

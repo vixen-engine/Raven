@@ -38,6 +38,7 @@ public class ParserTests(ITestOutputHelper log) {
     void Test_SyntaxTree() {
         var path = "../../../../Feed/Example1.rvn";
         var text = File.ReadAllText(path);
+        
         var tree = SyntaxTree.ParseText(text);
 
         var root = tree.GetRoot();
@@ -47,6 +48,6 @@ public class ParserTests(ITestOutputHelper log) {
         Assert.Equal("Vixen", (name.Left as SimpleNameSyntax).Identifier.Text);
         Assert.Equal("Test", name.Right.Identifier.Text);
         
-        Assert.Equal(3, compilationUnit.Imports.Count);
+        Assert.Equal(2, compilationUnit.Imports.Count);
     }
 }

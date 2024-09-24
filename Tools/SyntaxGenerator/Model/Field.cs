@@ -35,4 +35,5 @@ public class Field : TreeTypeChild {
     public bool IsOptional => string.Equals(Optional, "true", StringComparison.OrdinalIgnoreCase);
     public bool IsOverride => string.Equals(Override, "true", StringComparison.OrdinalIgnoreCase);
     public bool IsNew => string.Equals(New, "true", StringComparison.OrdinalIgnoreCase);
+    public string OverrideOrNewModifier => IsOverride ? "override " : IsNew ? "new " : "";
 }
