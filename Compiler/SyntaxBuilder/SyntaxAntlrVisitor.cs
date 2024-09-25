@@ -451,32 +451,67 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         return SyntaxFactory.Block(new(), new(SyntaxList.List(statements)));
     }
 
-    public override SyntaxNode VisitBreak_statement(RavenParser2.Break_statementContext context) =>
-        base.VisitBreak_statement(context);
+    public override SyntaxNode VisitBreak_statement(RavenParser2.Break_statementContext context) {
+        var attributes = context.attribute_list().Select(Visit).ToArray();
+        return SyntaxFactory.BreakStatement(new(SyntaxList.List(attributes)));
+    }
 
-    public override SyntaxNode VisitContinue_statement(RavenParser2.Continue_statementContext context) =>
-        base.VisitContinue_statement(context);
+    public override SyntaxNode VisitContinue_statement(RavenParser2.Continue_statementContext context) {
+        var attributes = context.attribute_list().Select(Visit).ToArray();
+        return SyntaxFactory.ContinueStatement(new(SyntaxList.List(attributes)));
+    }
 
-    public override SyntaxNode VisitRepeat_statement(RavenParser2.Repeat_statementContext context) =>
-        base.VisitRepeat_statement(context);
+    public override SyntaxNode VisitRepeat_statement(RavenParser2.Repeat_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        var expression = Visit(context.expression()) as ExpressionSyntax;
+        var statement = Visit(context.statement()) as StatementSyntax;
 
-    public override SyntaxNode VisitEmpty_statement(RavenParser2.Empty_statementContext context) =>
-        base.VisitEmpty_statement(context);
+        return SyntaxFactory.RepeatStatement(new(attributes), statement!, expression!);
+    }
 
-    public override SyntaxNode VisitExpression_statement(RavenParser2.Expression_statementContext context) =>
-        base.VisitExpression_statement(context);
+    public override SyntaxNode VisitEmpty_statement(RavenParser2.Empty_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        return SyntaxFactory.EmptyStatement(new(attributes));
+    }
 
-    public override SyntaxNode VisitFor_statement(RavenParser2.For_statementContext context) =>
-        base.VisitFor_statement(context);
+    public override SyntaxNode VisitExpression_statement(RavenParser2.Expression_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        var expression = Visit(context.expression()) as ExpressionSyntax;
 
-    public override SyntaxNode VisitIf_statement(RavenParser2.If_statementContext context) =>
-        base.VisitIf_statement(context);
+        return SyntaxFactory.ExpressionStatement(new(attributes), expression!);
+    }
 
-    public override SyntaxNode VisitElse_clause(RavenParser2.Else_clauseContext context) =>
-        base.VisitElse_clause(context);
+    public override SyntaxNode VisitFor_statement(RavenParser2.For_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        var identifier = Visit(context.identifier_token()) as SyntaxToken;
+        var expression = Visit(context.expression()) as ExpressionSyntax;
+        var block = Visit(context.block()) as StatementSyntax;
 
-    public override SyntaxNode VisitReturn_statement(RavenParser2.Return_statementContext context) =>
-        base.VisitReturn_statement(context);
+        return SyntaxFactory.ForStatement(new(attributes), identifier!, expression!, block!);
+    }
+
+    public override SyntaxNode VisitIf_statement(RavenParser2.If_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        var expression = Visit(context.expression()) as ExpressionSyntax;
+        var block = Visit(context.block()) as StatementSyntax;
+        var elseClause = context.else_clause() != null
+            ? Visit(context.else_clause()) as ElseClauseSyntax
+            : null;
+
+        return SyntaxFactory.IfStatement(new(attributes), expression!, block!, elseClause);
+    }
+
+    public override SyntaxNode VisitElse_clause(RavenParser2.Else_clauseContext context) {
+        var block = Visit(context.block()) as StatementSyntax;
+        return SyntaxFactory.ElseClause(block!);
+    }
+
+    public override SyntaxNode VisitReturn_statement(RavenParser2.Return_statementContext context) {
+        var attributes = SyntaxList.List(context.attribute_list().Select(Visit).ToArray());
+        var expression = context.expression() != null ? Visit(context.expression()) as ExpressionSyntax : null;
+
+        return SyntaxFactory.ReturnStatement(new(attributes), expression);
+    }
 
     public override SyntaxNode VisitLocal_function_statement(RavenParser2.Local_function_statementContext context) =>
         base.VisitLocal_function_statement(context);
@@ -497,16 +532,19 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
     public override SyntaxNode VisitSwitch_section(RavenParser2.Switch_sectionContext context) =>
         base.VisitSwitch_section(context);
 
-    public override SyntaxNode VisitCase_pattern_switch_label(RavenParser2.Case_pattern_switch_labelContext context) =>
-        base.VisitCase_pattern_switch_label(context);
+    public override SyntaxNode VisitCase_pattern_switch_label(RavenParser2.Case_pattern_switch_labelContext context) {
+        var pattern = Visit(context.pattern()) as PatternSyntax;
+        var whenClause = context.when_clause() != null ? Visit(context.when_clause()) as WhenClauseSyntax : null;
+        return SyntaxFactory.CasePatternSwitchLabel(pattern!, whenClause!);
+    }
 
-    public override SyntaxNode VisitCase_switch_label(RavenParser2.Case_switch_labelContext context) =>
-        base.VisitCase_switch_label(context);
+    public override SyntaxNode VisitCase_switch_label(RavenParser2.Case_switch_labelContext context) {
+        var expression = context.expression() != null ? Visit(context.expression()) as ExpressionSyntax : null;
+        return SyntaxFactory.CaseSwitchLabel(expression!);
+    }
 
     public override SyntaxNode VisitDefault_switch_label(RavenParser2.Default_switch_labelContext context) =>
-        base.VisitDefault_switch_label(context);
-
-    public override SyntaxNode VisitExpression(RavenParser2.ExpressionContext context) => base.VisitExpression(context);
+        SyntaxFactory.DefaultSwitchLabel();
 
     public override SyntaxNode VisitBase_expression(RavenParser2.Base_expressionContext context) =>
         SyntaxFactory.BaseExpression();
@@ -535,8 +573,10 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         return SyntaxFactory.EqualsValueClause(expression!);
     }
 
-    public override SyntaxNode VisitArrow_expression_clause(RavenParser2.Arrow_expression_clauseContext context) =>
-        base.VisitArrow_expression_clause(context);
+    public override SyntaxNode VisitArrow_expression_clause(RavenParser2.Arrow_expression_clauseContext context) {
+        var expression = Visit(context.expression()) as ExpressionSyntax;
+        return SyntaxFactory.ArrowExpressionClause(expression!);
+    }
 
     public override SyntaxNode VisitCollection_element(RavenParser2.Collection_elementContext context) =>
         base.VisitCollection_element(context);
@@ -685,43 +725,43 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         if (context.ABSTRACT() != null) {
             return new SyntaxToken(SyntaxKind.AbstractKeyword);
         }
-        
+
         if (context.ABSTRACT() != null) {
             return new SyntaxToken(SyntaxKind.AbstractKeyword);
         }
-        
+
         if (context.CONST() != null) {
             return new SyntaxToken(SyntaxKind.ConstKeyword);
         }
-        
+
         if (context.OVERRIDE() != null) {
             return new SyntaxToken(SyntaxKind.OverrideKeyword);
         }
-        
+
         if (context.PARTIAL() != null) {
             return new SyntaxToken(SyntaxKind.PartialKeyword);
         }
-        
+
         if (context.PRIVATE() != null) {
             return new SyntaxToken(SyntaxKind.PrivateKeyword);
         }
-        
+
         if (context.PROTECTED() != null) {
             return new SyntaxToken(SyntaxKind.ProtectedKeyword);
         }
-        
+
         if (context.PUBLIC() != null) {
             return new SyntaxToken(SyntaxKind.PublicKeyword);
         }
-        
+
         if (context.READONLY() != null) {
             return new SyntaxToken(SyntaxKind.ReadOnlyKeyword);
         }
-        
+
         if (context.STATIC() != null) {
             return new SyntaxToken(SyntaxKind.StaticKeyword);
         }
-        
+
         if (context.VIRTUAL() != null) {
             return new SyntaxToken(SyntaxKind.VirtualKeyword);
         }

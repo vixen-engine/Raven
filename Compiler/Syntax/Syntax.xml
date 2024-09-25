@@ -2,6 +2,7 @@
 <Tree Root="SyntaxNode">
     <PredefinedNode Name="SyntaxToken" Base="SyntaxNode"/>
 
+    
     <!-- Names -->
     <AbstractNode Name="NameSyntax" Base="TypeSyntax">
         <TypeComment>
@@ -123,7 +124,6 @@
     </Node>
     
 
-
     <!-- Expressions -->
     <AbstractNode Name="ExpressionOrPatternSyntax" Base="SyntaxNode"/>
     <AbstractNode Name="ExpressionSyntax" Base="ExpressionOrPatternSyntax">
@@ -161,7 +161,6 @@
             <summary>Creates a NameColonSyntax node.</summary>
         </FactoryComment>
     </Node>
-    
     <AbstractNode Name="InstanceExpressionSyntax" Base="ExpressionSyntax">
         <TypeComment>
             <summary>
@@ -187,6 +186,13 @@
         <FactoryComment>
             <summary>Creates a BaseExpressionSyntax node.</summary>
         </FactoryComment>
+    </Node>
+    <Node Name="ArrowExpressionClauseSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>The syntax for the expression body of an expression-bodied member.</summary>
+        </TypeComment>
+        <Kind Name="ArrowExpressionClause" />
+        <Field Name="Expression" Type="ExpressionSyntax" />
     </Node>
 
 
@@ -273,6 +279,7 @@
     </AbstractNode>
     <!-- TODO member declarations -->
 
+    
     <!-- Attributes -->
     <Node Name="AttributeListSyntax" Base="SyntaxNode">
         <TypeComment>
@@ -353,7 +360,6 @@
             <Kind Name="IdentifierName"/>
         </Field>
     </Node>
-
 
     
     <!-- Types -->
@@ -514,5 +520,260 @@
         <Kind Name="Block"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
         <Field Name="Statements" Type="SyntaxList&lt;StatementSyntax&gt;"/>
+    </Node>
+    <Node Name="BreakStatementSyntax" Base="StatementSyntax">
+        <Kind Name="BreakStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+    </Node>
+    <Node Name="ContinueStatementSyntax" Base="StatementSyntax">
+        <Kind Name="ContinueStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+    </Node>
+    <Node Name="RepeatStatementSyntax" Base="StatementSyntax">
+        <Kind Name="RepeatStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Statement" Type="StatementSyntax"/>
+        <Field Name="Condition" Type="ExpressionSyntax"/>
+    </Node>
+    <Node Name="EmptyStatementSyntax" Base="StatementSyntax">
+        <Kind Name="EmptyStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+    </Node>
+    <Node Name="ExpressionStatementSyntax" Base="StatementSyntax">
+        <Kind Name="ExpressionStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Expression" Type="ExpressionSyntax"/>
+    </Node>
+    <Node Name="ForStatementSyntax" Base="StatementSyntax">
+        <Kind Name="ForStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>SyntaxToken representing the identifier of the variable.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field> 
+        <Field Name="Expression" Type="ExpressionSyntax"/>
+        <Field Name="Statement" Type="StatementSyntax"/>
+    </Node>
+    <Node Name="IfStatementSyntax" Base="StatementSyntax">
+        <Kind Name="IfStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Condition" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>
+                    Gets an ExpressionSyntax that represents the condition of the if statement.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Statement" Type="StatementSyntax">
+            <PropertyComment>
+                <summary>
+                    Gets a StatementSyntax the represents the statement to be executed when the condition is true.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Else" Type="ElseClauseSyntax" Optional="true">
+            <PropertyComment>
+                <summary>
+                    Gets an ElseClauseSyntax that represents the statement to be executed when the condition is false if such statement exists.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>
+                Represents an if statement syntax.
+            </summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates an IfStatementSyntax node</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="ElseClauseSyntax" Base="SyntaxNode">
+        <Kind Name="ElseClause"/>
+        <Field Name="Statement" Type="StatementSyntax"/>
+        <TypeComment>
+            <summary>Represents an else statement syntax.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a ElseClauseSyntax node</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="ReturnStatementSyntax" Base="StatementSyntax">
+        <Kind Name="ReturnStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Expression" Type="ExpressionSyntax" Optional="true"/>
+    </Node>
+    <!-- TODO -->
+    <Node Name="LocalFunctionStatementSyntax" Base="StatementSyntax">
+        <Kind Name="LocalFunctionStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;"/>
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the identifier.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field>
+        <Field Name="TypeParameterList" Type="TypeParameterListSyntax" Optional="true"/>
+        <Field Name="ParameterList" Type="ParameterListSyntax"/>
+        <Field Name="ConstraintClauses" Type="SyntaxList&lt;TypeParameterConstraintClauseSyntax&gt;"/>
+        <Field Name="ReturnType" Type="TypeSyntax" Optional="true"/>
+        <Choice>
+            <Field Name="Body" Type="BlockSyntax"/>
+            <Field Name="ExpressionBody" Type="ArrowExpressionClauseSyntax"/>
+        </Choice>
+    </Node>
+    <!-- TODO -->
+    <Node Name="LocalDeclarationStatementSyntax" Base="StatementSyntax">
+        <Kind Name="LocalDeclarationStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="UsingKeyword" Type="SyntaxToken" Optional="true">
+            <Kind Name="UsingKeyword"/>
+        </Field>
+        <Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;">
+            <PropertyComment>
+                <summary>Gets the modifier list.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Declaration" Type="VariableDeclarationSyntax"/>
+    </Node>
+    <!-- TODO -->
+    <Node Name="WhileStatementSyntax" Base="StatementSyntax">
+        <Kind Name="WhileStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Condition" Type="ExpressionSyntax"/>
+        <Field Name="Statement" Type="StatementSyntax"/>
+    </Node>
+    <!-- TODO -->
+    <Node Name="UsingStatementSyntax" Base="StatementSyntax">
+        <Kind Name="UsingStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Choice>
+            <Field Name="Declaration" Type="VariableDeclarationSyntax"/>
+            <Field Name="Expression" Type="ExpressionSyntax"/>
+        </Choice>
+        <Field Name="Statement" Type="StatementSyntax"/>
+    </Node>
+    <!-- TODO -->
+    <Node Name="SwitchStatementSyntax" Base="StatementSyntax">
+        <Kind Name="SwitchStatement"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>
+                    Gets an ExpressionSyntax representing the expression of the switch statement.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Sections" Type="SyntaxList&lt;SwitchSectionSyntax&gt;">
+            <PropertyComment>
+                <summary>
+                    Gets a SyntaxList of SwitchSectionSyntax's that represents the switch sections of the switch statement.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Represents a switch statement syntax.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a SwitchStatementSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <!-- TODO -->
+    <Node Name="SwitchSectionSyntax" Base="SyntaxNode">
+        <Kind Name="SwitchSection"/>
+        <Field Name="Labels" Type="SyntaxList&lt;SwitchLabelSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>
+                    Gets a SyntaxList of SwitchLabelSyntax's the represents the possible labels that control can transfer to within the section.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Statements" Type="SyntaxList&lt;StatementSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>
+                    Gets a SyntaxList of StatementSyntax's the represents the statements to be executed when control transfer to a label the belongs to the section.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Represents a switch section syntax of a switch statement.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a SwitchSectionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <AbstractNode Name="SwitchLabelSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Represents a switch label within a switch statement.</summary>
+        </TypeComment>
+    </AbstractNode>
+    <Node Name="CasePatternSwitchLabelSyntax" Base="SwitchLabelSyntax">
+        <Kind Name="CasePatternSwitchLabel"/>
+        <Field Name="Pattern" Type="PatternSyntax">
+            <PropertyComment>
+                <summary>
+                    Gets a PatternSyntax that represents the pattern that gets matched for the case label.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="WhenClause" Type="WhenClauseSyntax" Optional="true"/>
+        <TypeComment>
+            <summary>Represents a case label within a switch statement.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a CaseMatchLabelSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="CaseSwitchLabelSyntax" Base="SwitchLabelSyntax">
+        <Kind Name="CaseSwitchLabel"/>
+        <Field Name="Value" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>
+                    Gets an ExpressionSyntax that represents the constant expression that gets matched for the case label.
+                </summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Represents a case label within a switch statement.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a CaseSwitchLabelSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="DefaultSwitchLabelSyntax" Base="SwitchLabelSyntax">
+        <Kind Name="DefaultSwitchLabel"/>
+        <TypeComment>
+            <summary>Represents a default label within a switch statement.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a DefaultSwitchLabelSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+
+
+
+
+
+
+    <Node Name="VariableDeclarationSyntax" Base="SyntaxNode">
+        <Kind Name="VariableDeclaration"/>
+        <Choice>
+            <Field Name="VarKeyword" Type="SyntaxToken" Optional="true">
+                <Kind Name="VarKeyword"/>
+            </Field>
+            <Field Name="ValKeyword" Type="SyntaxToken" Optional="true">
+                <Kind Name="ValKeyword"/>
+            </Field>
+        </Choice>
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the identifier.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field>
+        <Field Name="Type" Type="TypeSyntax"/>
+        <Field Name="Initializer" Type="EqualsValueClauseSyntax" Optional="true"/>
     </Node>
 </Tree>

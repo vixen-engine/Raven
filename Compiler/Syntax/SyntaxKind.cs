@@ -78,9 +78,44 @@ public enum SyntaxKind : ushort {
     BaseExpression,
     WhenClause,
     Block,
+    
+    BreakStatement,
+    ContinueStatement,
+    RepeatStatement,
+    EmptyStatement,
+    ExpressionStatement,
+    ForStatement,
+    IfStatement,
+    ElseClause,
+    ReturnStatement,
+    LocalFunctionStatement,
+    UsingKeyword,
+    LocalDeclarationStatement,
+    WhileStatement,
+    UsingStatement,
+    SwitchStatement,
+    SwitchSection,
+    CaseKeyword,
+    CasePatternSwitchLabel,
+    CaseSwitchLabel,
+    DefaultSwitchLabel,
+    VariableDeclaration,
+    ValKeyword,
+    VarKeyword,
+    ArrowExpressionClause
 }
 
 
 static class SyntaxKindExtensions {
     internal static SyntaxToken AsToken(this SyntaxKind kind) => new(kind);
+}
+
+
+// TODO
+public partial class TypeParameterListSyntax : SyntaxToken {
+    internal TypeParameterListSyntax(SyntaxKind kind) : base(kind) { }
+}
+
+public partial class TypeParameterConstraintClauseSyntax : SyntaxToken {
+    internal TypeParameterConstraintClauseSyntax(SyntaxKind kind) : base(kind) { }
 }
