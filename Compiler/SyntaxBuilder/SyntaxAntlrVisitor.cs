@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Vixen.Raven.Grammar;
 using Vixen.Raven.Syntax;
 
@@ -178,7 +180,23 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
         base.VisitPointerType(context);
 
     public override SyntaxNode VisitPredefinedType(RavenParser2.PredefinedTypeContext context) =>
-        base.VisitPredefinedType(context);
+        context.pType.Type switch {
+            RavenLexer2.BOOL => SyntaxFactory.PredefinedType(new(SyntaxKind.BoolKeyword)),
+            RavenLexer2.BYTE => SyntaxFactory.PredefinedType(new(SyntaxKind.ByteKeyword)),
+            RavenLexer2.SBYTE => SyntaxFactory.PredefinedType(new(SyntaxKind.SByteKeyword)),
+            RavenLexer2.INT => SyntaxFactory.PredefinedType(new(SyntaxKind.IntKeyword)),
+            RavenLexer2.UINT => SyntaxFactory.PredefinedType(new(SyntaxKind.UIntKeyword)),
+            RavenLexer2.SHORT => SyntaxFactory.PredefinedType(new(SyntaxKind.ShortKeyword)),
+            RavenLexer2.USHORT => SyntaxFactory.PredefinedType(new(SyntaxKind.UShortKeyword)),
+            RavenLexer2.LONG => SyntaxFactory.PredefinedType(new(SyntaxKind.LongKeyword)),
+            RavenLexer2.ULONG => SyntaxFactory.PredefinedType(new(SyntaxKind.ULongKeyword)),
+            RavenLexer2.FLOAT => SyntaxFactory.PredefinedType(new(SyntaxKind.FloatKeyword)),
+            RavenLexer2.DOUBLE => SyntaxFactory.PredefinedType(new(SyntaxKind.DoubleKeyword)),
+            RavenLexer2.STRING => SyntaxFactory.PredefinedType(new(SyntaxKind.StringKeyword)),
+            RavenLexer2.CHAR => SyntaxFactory.PredefinedType(new(SyntaxKind.CharKeyword)),
+            RavenLexer2.OBJECT => SyntaxFactory.PredefinedType(new(SyntaxKind.ObjectKeyword)),
+            _ => throw new NotSupportedException()
+        };
 
     public override SyntaxNode VisitTupleType(RavenParser2.TupleTypeContext context) => base.VisitTupleType(context);
 
@@ -423,18 +441,12 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
             ? Visit(context.name_colon()) as NameColonSyntax
             : null;
 
-        SyntaxToken? refKind = null;
-        if (context.REF() != null) {
-            refKind = new(SyntaxKind.RefKeyword);
-        }
-
-        if (context.OUT() != null) {
-            refKind = new(SyntaxKind.OutKeyword);
-        }
-
-        if (context.IN() != null) {
-            refKind = new(SyntaxKind.InKeyword);
-        }
+        SyntaxToken? refKind = context.kind.Type switch {
+            RavenLexer2.REF => new(SyntaxKind.RefKeyword),
+            RavenLexer2.OUT => new(SyntaxKind.OutKeyword),
+            RavenLexer2.IN => new(SyntaxKind.InKeyword),
+            _ => null
+        };
 
         var expression = Visit(context.expression()) as ExpressionSyntax;
         return SyntaxFactory.Argument(nameColon, refKind, expression!);
@@ -586,16 +598,10 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
     ) =>
         base.VisitAnonymous_object_member_declarator(context);
 
-    public override SyntaxNode VisitPrefix_unary_expression(RavenParser2.Prefix_unary_expressionContext context) =>
-        base.VisitPrefix_unary_expression(context);
-
     public override SyntaxNode VisitSwitch_expression_arm(RavenParser2.Switch_expression_armContext context) =>
         base.VisitSwitch_expression_arm(context);
 
     public override SyntaxNode VisitPattern(RavenParser2.PatternContext context) => base.VisitPattern(context);
-
-    public override SyntaxNode VisitRelational_pattern(RavenParser2.Relational_patternContext context) =>
-        base.VisitRelational_pattern(context);
 
     public override SyntaxNode VisitVariable_designation(RavenParser2.Variable_designationContext context) =>
         base.VisitVariable_designation(context);
@@ -614,66 +620,6 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
 
     public override SyntaxNode VisitArray_rank_specifier(RavenParser2.Array_rank_specifierContext context) =>
         base.VisitArray_rank_specifier(context);
-
-    public override SyntaxNode VisitPredefined_type(RavenParser2.Predefined_typeContext context) {
-        if (context.BOOL() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.BoolKeyword));
-        }
-
-        if (context.BYTE() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.ByteKeyword));
-        }
-
-        if (context.SBYTE() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.SByteKeyword));
-        }
-
-        if (context.INT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.IntKeyword));
-        }
-
-        if (context.UINT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.UIntKeyword));
-        }
-
-        if (context.SHORT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.ShortKeyword));
-        }
-
-        if (context.USHORT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.UShortKeyword));
-        }
-
-        if (context.LONG() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.LongKeyword));
-        }
-
-        if (context.ULONG() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.ULongKeyword));
-        }
-
-        if (context.FLOAT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.FloatKeyword));
-        }
-
-        if (context.DOUBLE() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.DoubleKeyword));
-        }
-
-        if (context.STRING() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.StringKeyword));
-        }
-
-        if (context.CHAR() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.CharKeyword));
-        }
-
-        if (context.OBJECT() != null) {
-            return SyntaxFactory.PredefinedType(new(SyntaxKind.ObjectKeyword));
-        }
-
-        throw new ArgumentOutOfRangeException();
-    }
 
     public override SyntaxNode VisitRegular_string_literal_token(
         RavenParser2.Regular_string_literal_tokenContext context
@@ -703,69 +649,33 @@ public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
 
     public override SyntaxNode VisitInteger_literal_token(RavenParser2.Integer_literal_tokenContext context) {
         // TODO: how to parse ulong, etc?
+        var type = context.GetChild(0) as ITerminalNode;
 
-        if (context.INTEGER_LITERAL() != null) {
-            return SyntaxFactory.Literal(long.Parse(context.INTEGER_LITERAL().GetText()));
-        }
-
-        if (context.HEX_INTEGER_LITERAL() != null) {
-            return SyntaxFactory.Literal(long.Parse(context.HEX_INTEGER_LITERAL().GetText()));
-        }
-
-        if (context.BIN_INTEGER_LITERAL() != null) {
-            return SyntaxFactory.Literal(long.Parse(context.BIN_INTEGER_LITERAL().GetText()));
-        }
-
-        throw new ArgumentOutOfRangeException();
+        return type?.Symbol.Type switch {
+            RavenLexer2.INTEGER_LITERAL => SyntaxFactory.Literal(long.Parse(type.GetText())),
+            RavenLexer2.HEX_INTEGER_LITERAL => SyntaxFactory.Literal(long.Parse(type.GetText())),
+            RavenLexer2.BIN_INTEGER_LITERAL => SyntaxFactory.Literal(long.Parse(type.GetText())),
+            _ => throw new NotSupportedException()
+        };
     }
 
     public override SyntaxNode VisitKeyword(RavenParser2.KeywordContext context) => base.VisitKeyword(context);
 
     public override SyntaxNode VisitModifier(RavenParser2.ModifierContext context) {
-        if (context.ABSTRACT() != null) {
-            return new SyntaxToken(SyntaxKind.AbstractKeyword);
-        }
+        var token = context.GetChild(0) as ITerminalNode;
 
-        if (context.ABSTRACT() != null) {
-            return new SyntaxToken(SyntaxKind.AbstractKeyword);
-        }
-
-        if (context.CONST() != null) {
-            return new SyntaxToken(SyntaxKind.ConstKeyword);
-        }
-
-        if (context.OVERRIDE() != null) {
-            return new SyntaxToken(SyntaxKind.OverrideKeyword);
-        }
-
-        if (context.PARTIAL() != null) {
-            return new SyntaxToken(SyntaxKind.PartialKeyword);
-        }
-
-        if (context.PRIVATE() != null) {
-            return new SyntaxToken(SyntaxKind.PrivateKeyword);
-        }
-
-        if (context.PROTECTED() != null) {
-            return new SyntaxToken(SyntaxKind.ProtectedKeyword);
-        }
-
-        if (context.PUBLIC() != null) {
-            return new SyntaxToken(SyntaxKind.PublicKeyword);
-        }
-
-        if (context.READONLY() != null) {
-            return new SyntaxToken(SyntaxKind.ReadOnlyKeyword);
-        }
-
-        if (context.STATIC() != null) {
-            return new SyntaxToken(SyntaxKind.StaticKeyword);
-        }
-
-        if (context.VIRTUAL() != null) {
-            return new SyntaxToken(SyntaxKind.VirtualKeyword);
-        }
-
-        throw new ArgumentOutOfRangeException();
+        return token?.Symbol.Type switch {
+            RavenLexer2.ABSTRACT => new(SyntaxKind.AbstractKeyword),
+            RavenLexer2.CONST => new(SyntaxKind.ConstKeyword),
+            RavenLexer2.OVERRIDE => new(SyntaxKind.OverrideKeyword),
+            RavenLexer2.PARTIAL => new(SyntaxKind.PartialKeyword),
+            RavenLexer2.PRIVATE => new(SyntaxKind.PrivateKeyword),
+            RavenLexer2.PROTECTED => new(SyntaxKind.ProtectedKeyword),
+            RavenLexer2.PUBLIC => new(SyntaxKind.PublicKeyword),
+            RavenLexer2.READONLY => new(SyntaxKind.ReadOnlyKeyword),
+            RavenLexer2.STATIC => new(SyntaxKind.StaticKeyword),
+            RavenLexer2.VIRTUAL => new SyntaxToken(SyntaxKind.VirtualKeyword),
+            _ => throw new NotSupportedException()
+        };
     }
 }

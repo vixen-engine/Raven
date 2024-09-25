@@ -119,7 +119,7 @@ constructor_declaration
     ;
   
 constructor_initializer
-  : ':' (BASE | SELF) argument_list
+  : ':' init=(BASE | SELF) argument_list
   ;
   
 destructor_declaration
@@ -143,7 +143,7 @@ accessor_list
     ;
 
 accessor_declaration
-    : attribute_list* modifier* (GET | SET | WILL_SET | DID_SET) (block | (arrow_expression_clause NL)) NL*
+    : attribute_list* modifier* op=(GET | SET | WILL_SET | DID_SET) (block | (arrow_expression_clause NL)) NL*
     ;
 
 indexer_declaration
@@ -159,11 +159,11 @@ delegate_declaration
     ;
   
 conversion_operator_declaration
-    : attribute_list* modifier* (IMPLICIT | EXPLICIT) explicit_interface_specifier? OPERATOR type parameter_list (block | (arrow_expression_clause NL))
+    : attribute_list* modifier* ct=(IMPLICIT | EXPLICIT) explicit_interface_specifier? OPERATOR type parameter_list (block | (arrow_expression_clause NL))
     ; 
     
 operator_declaration
-    : attribute_list* modifier* type explicit_interface_specifier? OPERATOR ('+' | '-' | '!' | '~' | '++' | '--' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'false' | 'true' | 'is') parameter_list (block | (arrow_expression_clause NL))
+    : attribute_list* modifier* type explicit_interface_specifier? OPERATOR op=('+' | '-' | '!' | '~' | '++' | '--' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'false' | 'true' | 'is') parameter_list (block | (arrow_expression_clause NL))
     ;
   
 base_type_declaration
@@ -212,7 +212,7 @@ type_parameter_list
     ;
 
 type_parameter
-    : attribute_list* (IN | OUT)? identifier_token
+    : attribute_list* dir=(IN | OUT)? identifier_token
     ;
     
 type_parameter_constraint_clause
@@ -270,7 +270,7 @@ argument_list
     ;
 
 argument
-    : name_colon? (REF | OUT | IN)? expression
+    : name_colon? kind=(REF | OUT | IN)? expression
     ;
 
 bracketed_argument_list
@@ -389,10 +389,10 @@ expression
     : anonymous_function_expression         #AnonymousFunctionExpression
     | '{' NL* (anonymous_object_member_declarator (',' NL* anonymous_object_member_declarator)*)? NL* '}' #AnonymousObjectCreationExpression
 //  | array_creation_expression
-    | expression ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=' | '??=') expression #AssignmentExpression
+    | expression op=('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=' | '??=') expression #AssignmentExpression
 //  | await_expression
 //  | base_object_creation_expression
-    | expression ('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
+    | expression op=('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
     | '(' type ')' expression               #CastExpression
     | '[' NL* (collection_element (',' NL* collection_element)*)? NL* ']' #CollectionExpression
     | expression '?' expression             #ConditionalAccessExpression
@@ -409,11 +409,11 @@ expression
     | expression argument_list              #InvocationExpression
     | expression IS pattern                 #IsPatternExpression
     | literal_expression                    #LiteralExpression
-    | expression ('.' | '->') simple_name   #MemberAccessExpression
+    | expression op=('.' | '->') simple_name   #MemberAccessExpression
     | '.' simple_name                       #MemberBindingExpression
     | '(' expression ')'                    #ParenthesizedExpression
-    | expression ('++' | '--' | '!')        #PostfixUnaryExpression
-    | prefix_unary_expression               #PrefixUnaryExpression
+    | expression op=('++' | '--' | '!')        #PostfixUnaryExpression
+    | op=('!' | '&' | '*' | '+' | '++' | '-' | '--' | '^' | '~') expression #PrefixUnaryExpression
     | expression DOUBLE_DOT expression      #RangeExpression
     | REF expression                        #RefExpression
     | SIZEOF '(' type ')'                   #SizeofExpression
@@ -485,46 +485,24 @@ collection_element
 anonymous_object_member_declarator
     : name_equals? expression
     ;
-    
-prefix_unary_expression
-    : '!' expression
-    | '&' expression
-    | '*' expression
-    | '+' expression
-    | '++' expression
-    | '-' expression
-    | '--' expression
-    | '^' expression
-    | '~' expression
-    ;
 
 switch_expression_arm
     : pattern when_clause? '=>' expression
     ;
     
 pattern
-    : pattern (OR | AND) pattern    #BinaryPattern
-    | expression                    #ConstantPattern
-    | type variable_designation     #DeclarationPattern
-    | DISCARD                       #DiscardPattern
-    | '[' (pattern (',' pattern)*)? ']' variable_designation? #ListPattern
-    | '(' pattern ')'               #ParenthesizedPattern
-//  | recursive_pattern
-    | relational_pattern            #RelationalPattern
-    | '..' pattern?                 #SlicePattern
-    | type                          #TypePattern
-    | NOT pattern                   #UnaryPattern
-    | VAR variable_designation      #VarPattern
+    : pattern op=(OR | AND) pattern                             #BinaryPattern
+    | expression                                                #ConstantPattern
+    | type variable_designation                                 #DeclarationPattern
+    | DISCARD                                                   #DiscardPattern
+    | '[' (pattern (',' pattern)*)? ']' variable_designation?   #ListPattern
+    | '(' pattern ')'                                           #ParenthesizedPattern
+    | op=('!=' | '<' | '<=' | '==' | '>' | '>=') expression     #RelationalPattern
+    | '..' pattern?                                             #SlicePattern
+    | type                                                      #TypePattern
+    | NOT pattern                                               #UnaryPattern
+    | VAR variable_designation                                  #VarPattern
   ;
-  
-relational_pattern
-    : '!=' expression
-    | '<' expression
-    | '<=' expression
-    | '==' expression
-    | '>' expression
-    | '>=' expression
-    ;
 
 variable_designation
     : DISCARD                                                       #DiscardDesignation
@@ -583,43 +561,21 @@ syntax_token
 // ================================================= TYPES =============================================================
 // =====================================================================================================================
 type
-    : type array_rank_specifier+                #ArrayType
-    | name                                      #NameType
-    | type '?'                                  #NullableType
-//    | omitted_type_argument
-    | type '*'                                  #PointerType
-    | predefined_type                           #PredefinedType
-    | '(' tuple_element (',' tuple_element)+ ')' #TupleType
+    : type array_rank_specifier+                    #ArrayType
+    | name                                          #NameType
+    | type '?'                                      #NullableType
+    | type '*'                                      #PointerType
+    | pType=(BOOL | BYTE | SBYTE | INT | UINT | SHORT | USHORT | LONG | ULONG | FLOAT | DOUBLE | STRING | CHAR | OBJECT) #PredefinedType
+    | '(' tuple_element (',' tuple_element)+ ')'    #TupleType
     ;
-
+    
 tuple_element
   : type identifier_token?
-  ;
-
-array_type
-  : type array_rank_specifier+
   ;
 
 array_rank_specifier
   : '[' (expression (',' expression)*)? ']'
   ;
-
-predefined_type
-    : BOOL
-    | BYTE
-    | CHAR
-    | DOUBLE
-    | FLOAT
-    | INT
-    | LONG
-    | OBJECT
-    | SBYTE
-    | SHORT
-    | STRING
-    | USHORT
-    | UINT
-    | ULONG
-    ;
 
 string_literal_token
     : regular_string_literal_token
