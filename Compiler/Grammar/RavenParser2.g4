@@ -212,7 +212,7 @@ type_parameter_list
     ;
 
 type_parameter
-    : attribute_list* dir=(IN | OUT)? identifier_token
+    : attribute_list* variance=(IN | OUT)? identifier_token
     ;
     
 type_parameter_constraint_clause
@@ -221,10 +221,10 @@ type_parameter_constraint_clause
     
 type_parameter_constraint
 //    : allows_constraint_clause
-    : class_or_struct_constraint    #ClassOrStructConstraint
-    | NEW '(' ')'                   #ConstructorConstraint
-    | DEFAULT                       #DefaultConstraint
-    | type                          #TypeContraint
+    : (CLASS | STRUCT) q='?'? #ClassOrStructConstraint
+    | NEW '(' ')'             #ConstructorConstraint
+    | DEFAULT                 #DefaultConstraint
+    | type                    #TypeContraint
     ;
     
 //allows_constraint_clause
@@ -238,11 +238,6 @@ type_parameter_constraint
 //ref_struct_constraint
 //    : 'ref' 'struct'
 //    ;
-    
-class_or_struct_constraint
-    : CLASS '?'?
-    | STRUCT '?'?
-    ;
     
 base_list
     : ':' base_type (',' base_type)*
@@ -386,41 +381,42 @@ default_switch_label
 // ================================================= Expressions =======================================================
 // =====================================================================================================================
 expression
-    : anonymous_function_expression         #AnonymousFunctionExpression
+    : anonymous_function_expression             #AnonymousFunctionExpression
     | '{' NL* (anonymous_object_member_declarator (',' NL* anonymous_object_member_declarator)*)? NL* '}' #AnonymousObjectCreationExpression
 //  | array_creation_expression
     | expression op=('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=' | '??=') expression #AssignmentExpression
 //  | await_expression
 //  | base_object_creation_expression
     | expression op=('+' | '-' | '*' | '/' | '%' | '<<' | '>>' | '>>>' | '||' | '&&' | '|' | '&' | '^' | '==' | '!=' | '<' | '<=' | '>' | '>=' | 'is' | 'as' | '??') expression #BinaryExpression
-    | '(' type ')' expression               #CastExpression
+    | '(' type ')' expression                   #CastExpression
     | '[' NL* (collection_element (',' NL* collection_element)*)? NL* ']' #CollectionExpression
-    | expression '?' expression             #ConditionalAccessExpression
-    | expression '?' expression ':' expression #ConditionalExpression
-    | type variable_designation             #DeclarationExpression
-    | DEFAULT '(' type ')'                  #DefaultExpression
-    | expression bracketed_argument_list    #ElementAccessExpression
+    | expression '?' expression                 #ConditionalAccessExpression
+    | expression '?' expression ':' expression  #ConditionalExpression
+    | type variable_designation                 #DeclarationExpression
+    | DEFAULT '(' type ')'                      #DefaultExpression
+    | expression bracketed_argument_list        #ElementAccessExpression
 //  | implicit_array_creation_expression
-    | bracketed_argument_list               #ImplicitElementAccess
+    | bracketed_argument_list                   #ImplicitElementAccess
 //  | implicit_stack_alloc_array_creation_expression
 //  | initializer_expression TODO: this is probably not valid in our grammar as we don't use 'new' keyword for anonymous object creation
-    | instance_expression                   #InstanceExpression
+    | instance_expression                       #InstanceExpression
 //  | interpolated_string_expression
-    | expression argument_list              #InvocationExpression
-    | expression IS pattern                 #IsPatternExpression
-    | literal_expression                    #LiteralExpression
-    | expression op=('.' | '->') simple_name   #MemberAccessExpression
-    | '.' simple_name                       #MemberBindingExpression
-    | '(' expression ')'                    #ParenthesizedExpression
-    | expression op=('++' | '--' | '!')        #PostfixUnaryExpression
-    | op=('!' | '&' | '*' | '+' | '++' | '-' | '--' | '^' | '~') expression #PrefixUnaryExpression
-    | expression DOUBLE_DOT expression      #RangeExpression
-    | REF expression                        #RefExpression
-    | SIZEOF '(' type ')'                   #SizeofExpression
+    | expression argument_list                  #InvocationExpression
+    | expression IS pattern                     #IsPatternExpression
+    | literal_expression                        #LiteralExpression
+//    TODO: do we need "->"?
+    | expression op=('.' | '->') simple_name    #MemberAccessExpression
+    | '.' simple_name                           #MemberBindingExpression
+    | '(' expression ')'                        #ParenthesizedExpression
+    | expression op=('++' | '--' | '!')         #PostfixUnaryExpression
+    | op=('!' | '+' | '++' | '-' | '--' | '^' | '~') expression #PrefixUnaryExpression
+    | expression DOUBLE_DOT expression          #RangeExpression
+    | REF expression                            #RefExpression
+    | SIZEOF '(' type ')'                       #SizeofExpression
     | expression 'switch' '{' NL+ (switch_expression_arm (',' switch_expression_arm)*)? NL+ '}' #SwitchExpression
-    | '(' argument (',' argument)+ ')'?     #TupleExpression
-    | type                                  #TypeExpression
-    | TYPEOF '(' type ')'                   #TypeofExpression
+    | '(' argument (',' argument)+ ')'?         #TupleExpression
+    | type                                      #TypeExpression
+    | TYPEOF '(' type ')'                       #TypeofExpression
 //  | with_expression
   ;
     
@@ -564,7 +560,6 @@ type
     : type array_rank_specifier+                    #ArrayType
     | name                                          #NameType
     | type '?'                                      #NullableType
-    | type '*'                                      #PointerType
     | pType=(BOOL | BYTE | SBYTE | INT | UINT | SHORT | USHORT | LONG | ULONG | FLOAT | DOUBLE | STRING | CHAR | OBJECT) #PredefinedType
     | '(' tuple_element (',' tuple_element)+ ')'    #TupleType
     ;

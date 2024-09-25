@@ -2,19 +2,7 @@ namespace Vixen.Raven.Syntax;
 
 public enum SyntaxKind : ushort {
     None,
-    PercentToken,
-    OpenBraceToken,
-    // TODO
-    
-    FalseKeyword,
-    
     IdentifierName,
-    // ETC
-    
-    
-    
-    
-    // non sorted stuff from the generator
     ListKind,
     GlobalKeyword,
     IdentifierToken,
@@ -62,7 +50,6 @@ public enum SyntaxKind : ushort {
     Parameter,
     ParameterList,
     BracketedParameterList,
-    
     AbstractKeyword,
     ConstKeyword,
     OverrideKeyword,
@@ -73,12 +60,10 @@ public enum SyntaxKind : ushort {
     ReadOnlyKeyword,
     StaticKeyword,
     VirtualKeyword,
-    
     SelfExpression,
     BaseExpression,
     WhenClause,
     Block,
-    
     BreakStatement,
     ContinueStatement,
     RepeatStatement,
@@ -95,14 +80,58 @@ public enum SyntaxKind : ushort {
     UsingStatement,
     SwitchStatement,
     SwitchSection,
-    CaseKeyword,
+    // CaseKeyword,
     CasePatternSwitchLabel,
     CaseSwitchLabel,
     DefaultSwitchLabel,
     VariableDeclaration,
-    ValKeyword,
-    VarKeyword,
-    ArrowExpressionClause
+    ConstDeclaration,
+    ArrowExpressionClause,
+    FieldDeclaration,
+    BaseConstructorInitializer,
+    SelfConstructorInitializer,
+    ExplicitInterfaceSpecifier,
+    TypeParameter,
+    BaseList,
+    ExpressionElement,
+    SpreadElement,
+    UnaryPlusExpression,
+    UnaryMinusExpression,
+    BitwiseNotExpression,
+    LogicalNotExpression,
+    PreIncrementExpression,
+    PreDecrementExpression,
+    IndexExpression,
+    PostIncrementExpression,
+    PostDecrementExpression,
+    SuppressNullableWarningExpression,
+    ParenthesizedExpression,
+    MemberBindingExpression,
+    EqualsRelationalPattern,
+    NotEqualsRelationalPattern,
+    LessThanRelationalPattern,
+    LessThanEqualsRelationalPattern,
+    GreaterThanRelationalPattern,
+    GreaterThanEqualsRelationalPattern,
+    TypeOfExpression,
+    SizeOfExpression,
+    DefaultExpression,
+    ClassConstraint,
+    StructConstraint,
+    QuestionToken,
+    ConstructorConstraint,
+    IsPatternExpression,
+    TypeConstraint,
+    DefaultConstraint,
+    CastExpression,
+    AnonymousObjectMemberDeclarator,
+    ArrayType,
+    ArrayRankSpecifier,
+    NullableType,
+    TupleElement,
+    TupleType,
+    DiscardDesignation,
+    
 }
 
 

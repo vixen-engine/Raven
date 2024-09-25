@@ -135,6 +135,31 @@
         </TypeComment>
     </AbstractNode>
     <AbstractNode Name="PatternSyntax" Base="ExpressionOrPatternSyntax"/>
+    <Node Name="VarPatternSyntax" Base="PatternSyntax">
+        <Kind Name="VarPattern" />
+        <Field Name="Designation" Type="VariableDesignationSyntax"/>
+    </Node>
+    <Node Name="UnaryPatternSyntax" Base="PatternSyntax">
+        <Kind Name="NotPattern"/>
+        <Field Name="Pattern" Type="PatternSyntax" />
+    </Node>
+    <Node Name="TypePatternSyntax" Base="PatternSyntax">
+        <Kind Name="TypePattern"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>The type for the type pattern.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+    <Node Name="RelationalPatternSyntax" Base="PatternSyntax">
+        <Kind Name="EqualsRelationalPattern"/>
+        <Kind Name="NotEqualsRelationalPattern"/>
+        <Kind Name="LessThanRelationalPattern"/>
+        <Kind Name="LessThanEqualsRelationalPattern"/>
+        <Kind Name="GreaterThanRelationalPattern"/>
+        <Kind Name="GreaterThanEqualsRelationalPattern"/>
+        <Field Name="Expression" Type="ExpressionSyntax" />
+    </Node>
     <Node Name="DiscardPatternSyntax" Base="PatternSyntax">
         <Kind Name="DiscardPattern"/>
     </Node>
@@ -194,7 +219,150 @@
         <Kind Name="ArrowExpressionClause" />
         <Field Name="Expression" Type="ExpressionSyntax" />
     </Node>
-
+    <Node Name="ParenthesizedExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="ParenthesizedExpression"/>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax node representing the expression enclosed within the parenthesis.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for parenthesized expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a ParenthesizedExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="PrefixUnaryExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="UnaryPlusExpression"/>
+        <Kind Name="UnaryMinusExpression"/>
+        <Kind Name="BitwiseNotExpression"/>
+        <Kind Name="LogicalNotExpression"/>
+        <Kind Name="PreIncrementExpression"/>
+        <Kind Name="PreDecrementExpression"/>
+        <Kind Name="IndexExpression"/>
+        <Field Name="Operand" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax representing the operand of the prefix unary expression.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for prefix unary expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a PrefixUnaryExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="PostfixUnaryExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="PostIncrementExpression"/>
+        <Kind Name="PostDecrementExpression"/>
+        <Kind Name="SuppressNullableWarningExpression"/>
+        <Field Name="Operand" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax representing the operand of the postfix unary expression.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for postfix unary expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a PostfixUnaryExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="MemberBindingExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="MemberBindingExpression"/>
+        <Field Name="Name" Type="SimpleNameSyntax">
+            <PropertyComment>
+                <summary>SimpleNameSyntax node representing the member being bound to.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for member binding expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a MemberBindingExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="TypeOfExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="TypeOfExpression"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>The expression to return type of.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for TypeOf expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a TypeOfExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="SizeOfExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="SizeOfExpression"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>Argument of the primary function.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for SizeOf expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a SizeOfExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="DefaultExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="DefaultExpression"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>Argument of the primary function.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for Default expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a DefaultExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="IsPatternExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="IsPatternExpression"/>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax node representing the expression on the left of the "is" operator.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Pattern" Type="PatternSyntax">
+            <PropertyComment>
+                <summary>PatternSyntax node representing the pattern on the right of the "is" operator.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents a simple pattern-matching expression using the "is" keyword.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates an IsPatternExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="CastExpressionSyntax" Base="ExpressionSyntax">
+        <Kind Name="CastExpression"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>TypeSyntax node representing the type to which the expression is being cast.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax node representing the expression that is being casted.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for cast expression.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a CastExpressionSyntax node.</summary>
+        </FactoryComment>
+    </Node>
 
     <Node Name="WhenClauseSyntax" Base="SyntaxNode">
         <Kind Name="WhenClause" />
@@ -239,8 +407,73 @@
             <summary>Creates a PredefinedTypeSyntax node.</summary>
         </FactoryComment>
     </Node>
+    <Node Name="ArrayTypeSyntax" Base="TypeSyntax">
+        <Kind Name="ArrayType"/>
+        <Field Name="ElementType" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>TypeSyntax node representing the type of the element of the array.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="RankSpecifiers" Type="SyntaxList&lt;ArrayRankSpecifierSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>SyntaxList of ArrayRankSpecifierSyntax nodes representing the list of rank specifiers for the array.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for the array type.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates an ArrayTypeSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+    <Node Name="ArrayRankSpecifierSyntax" Base="SyntaxNode">
+        <Kind Name="ArrayRankSpecifier" />
+        <Field Name="Sizes" Type="SyntaxList&lt;ExpressionSyntax&gt;"/>
+    </Node>
+    <Node Name="NullableTypeSyntax" Base="TypeSyntax">
+        <Kind Name="NullableType"/>
+        <Field Name="ElementType" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>TypeSyntax node representing the type of the element.</summary>
+            </PropertyComment>
+        </Field>
+        <TypeComment>
+            <summary>Class which represents the syntax node for a nullable type.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a NullableTypeSyntax node.</summary>
+        </FactoryComment>
+    </Node>
 
-
+    <Node Name="TupleElementSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Tuple type element.</summary>
+        </TypeComment>
+        <Kind Name="TupleElement"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>Gets the type of the tuple element.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Identifier" Type="SyntaxToken" Optional="true">
+            <PropertyComment>
+                <summary>Gets the name of the tuple element.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field>
+    </Node>
+    <Node Name="TupleTypeSyntax" Base="TypeSyntax">
+        <Kind Name="TupleType"/>
+        <Field Name="Elements" Type="SyntaxList&lt;TupleElementSyntax&gt;" MinCount="2"/>
+        <TypeComment>
+            <summary>Class which represents the syntax node for tuple type.</summary>
+        </TypeComment>
+        <FactoryComment>
+            <summary>Creates a TupleTypeSyntax node.</summary>
+        </FactoryComment>
+    </Node> 
+    
+    
     <!-- Declarations -->
     <Node Name="CompilationUnitSyntax" Base="SyntaxNode">
         <Kind Name="CompilationUnit"/>
@@ -277,8 +510,63 @@
             </PropertyComment>
         </Field>
     </AbstractNode>
+    <AbstractNode Name="BaseFieldDeclarationSyntax" Base="MemberDeclarationSyntax">
+        <Field Name="Declaration" Type="VariableDeclarationSyntax"/>
+    </AbstractNode>
+    <Node Name="FieldDeclarationSyntax" Base="BaseFieldDeclarationSyntax">
+        <Kind Name="FieldDeclaration"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
+        <Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;" Override="true"/>
+        <Field Name="Declaration" Type="VariableDeclarationSyntax" Override="true"/>
+    </Node>
+    <Node Name="TypeParameterListSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Type parameter list syntax.</summary>
+        </TypeComment>
+        <Kind Name="TypeParameterList"/>
+        <Field Name="Parameters" Type="SyntaxList&lt;TypeParameterSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>Gets the parameter list.</summary>
+            </PropertyComment>
+        </Field>
+    </Node> 
+    
     <!-- TODO member declarations -->
 
+
+    <Node Name="AnonymousObjectMemberDeclaratorSyntax" Base="SyntaxNode">
+        <Kind Name="AnonymousObjectMemberDeclarator"/>
+        <Field Name="NameEquals" Type="NameEqualsSyntax" Optional="true">
+            <PropertyComment>
+                <summary>NameEqualsSyntax representing the optional name of the member being initialized.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="Expression" Type="ExpressionSyntax">
+            <PropertyComment>
+                <summary>ExpressionSyntax representing the value the member is initialized with.</summary>
+            </PropertyComment>
+        </Field>
+        <FactoryComment>
+            <summary>Creates an AnonymousObjectMemberDeclaratorSyntax node.</summary>
+        </FactoryComment>
+    </Node>
+
+    
+
+    <Node Name="ConstructorInitializerSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Constructor initializer syntax.</summary>
+        </TypeComment>
+        <Kind Name="BaseConstructorInitializer"/>
+        <Kind Name="SelfConstructorInitializer"/>
+        <Field Name="ArgumentList" Type="ArgumentListSyntax"/>
+    </Node>
+
+    <Node Name="ExplicitInterfaceSpecifierSyntax" Base="SyntaxNode">
+        <Kind Name="ExplicitInterfaceSpecifier"/>
+        <Field Name="Name" Type="NameSyntax"/>
+    </Node>
+    
     
     <!-- Attributes -->
     <Node Name="AttributeListSyntax" Base="SyntaxNode">
@@ -437,6 +725,11 @@
         </TypeComment>
         <Kind Name="BracketedParameterList"/>
         <Field Name="Parameters" Type="SyntaxList&lt;ParameterSyntax&gt;" Override="true" MinCount="1"/>
+    </Node>
+
+    <AbstractNode Name="VariableDesignationSyntax" Base="SyntaxNode"/>
+    <Node Name="DiscardDesignationSyntax" Base="VariableDesignationSyntax">
+        <Kind Name="DiscardDesignation"/>
     </Node>
 
 
@@ -604,7 +897,6 @@
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
         <Field Name="Expression" Type="ExpressionSyntax" Optional="true"/>
     </Node>
-    <!-- TODO -->
     <Node Name="LocalFunctionStatementSyntax" Base="StatementSyntax">
         <Kind Name="LocalFunctionStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
@@ -624,7 +916,6 @@
             <Field Name="ExpressionBody" Type="ArrowExpressionClauseSyntax"/>
         </Choice>
     </Node>
-    <!-- TODO -->
     <Node Name="LocalDeclarationStatementSyntax" Base="StatementSyntax">
         <Kind Name="LocalDeclarationStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
@@ -638,14 +929,12 @@
         </Field>
         <Field Name="Declaration" Type="VariableDeclarationSyntax"/>
     </Node>
-    <!-- TODO -->
     <Node Name="WhileStatementSyntax" Base="StatementSyntax">
         <Kind Name="WhileStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
         <Field Name="Condition" Type="ExpressionSyntax"/>
         <Field Name="Statement" Type="StatementSyntax"/>
     </Node>
-    <!-- TODO -->
     <Node Name="UsingStatementSyntax" Base="StatementSyntax">
         <Kind Name="UsingStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
@@ -655,7 +944,6 @@
         </Choice>
         <Field Name="Statement" Type="StatementSyntax"/>
     </Node>
-    <!-- TODO -->
     <Node Name="SwitchStatementSyntax" Base="StatementSyntax">
         <Kind Name="SwitchStatement"/>
         <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
@@ -680,7 +968,6 @@
             <summary>Creates a SwitchStatementSyntax node.</summary>
         </FactoryComment>
     </Node>
-    <!-- TODO -->
     <Node Name="SwitchSectionSyntax" Base="SyntaxNode">
         <Kind Name="SwitchSection"/>
         <Field Name="Labels" Type="SyntaxList&lt;SwitchLabelSyntax&gt;" MinCount="1">
@@ -753,27 +1040,101 @@
     </Node>
 
 
-
-
-
-
     <Node Name="VariableDeclarationSyntax" Base="SyntaxNode">
         <Kind Name="VariableDeclaration"/>
-        <Choice>
-            <Field Name="VarKeyword" Type="SyntaxToken" Optional="true">
-                <Kind Name="VarKeyword"/>
-            </Field>
-            <Field Name="ValKeyword" Type="SyntaxToken" Optional="true">
-                <Kind Name="ValKeyword"/>
-            </Field>
-        </Choice>
+        <Kind Name="ConstDeclaration"/>
         <Field Name="Identifier" Type="SyntaxToken">
             <PropertyComment>
                 <summary>Gets the identifier.</summary>
             </PropertyComment>
             <Kind Name="IdentifierToken"/>
         </Field>
-        <Field Name="Type" Type="TypeSyntax"/>
+        <Field Name="Type" Type="TypeSyntax" Optional="true"/>
         <Field Name="Initializer" Type="EqualsValueClauseSyntax" Optional="true"/>
+    </Node>
+    <Node Name="TypeParameterSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Type parameter syntax.</summary>
+        </TypeComment>
+        <Kind Name="TypeParameter"/>
+        <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;">
+            <PropertyComment>
+                <summary>Gets the attribute declaration list.</summary>
+            </PropertyComment>
+        </Field>
+        <Field Name="VarianceKeyword" Type="SyntaxToken" Optional="true">
+            <Kind Name="InKeyword"/>
+            <Kind Name="OutKeyword"/>
+        </Field>
+        <Field Name="Identifier" Type="SyntaxToken">
+            <PropertyComment>
+                <summary>Gets the identifier.</summary>
+            </PropertyComment>
+            <Kind Name="IdentifierToken"/>
+        </Field>
+    </Node>
+    <Node Name="BaseListSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Base list syntax.</summary>
+        </TypeComment>
+        <Kind Name="BaseList"/>
+        <Field Name="Types" Type="SyntaxList&lt;BaseTypeSyntax&gt;" MinCount="1">
+            <PropertyComment>
+                <summary>Gets the base type references.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+
+    <AbstractNode Name="CollectionElementSyntax" Base="SyntaxNode" />
+    <Node Name="ExpressionElementSyntax" Base="CollectionElementSyntax">
+        <Kind Name="ExpressionElement"/>
+        <Field Name="Expression" Type="ExpressionSyntax" />
+    </Node>
+    <Node Name="SpreadElementSyntax" Base="CollectionElementSyntax">
+        <Kind Name="SpreadElement"/>
+        <Field Name="Expression" Type="ExpressionSyntax" />
+    </Node>
+
+
+    <AbstractNode Name="TypeParameterConstraintSyntax" Base="SyntaxNode">
+        <TypeComment>
+            <summary>Base type for type parameter constraint syntax.</summary>
+        </TypeComment>
+    </AbstractNode>
+    <Node Name="ClassOrStructConstraintSyntax" Base="TypeParameterConstraintSyntax">
+        <TypeComment>
+            <summary>Class or struct constraint syntax.</summary>
+        </TypeComment>
+        <Kind Name="ClassConstraint"/>
+        <Kind Name="StructConstraint"/>
+        <Field Name="QuestionToken" Type="SyntaxToken" Optional="true">
+            <Kind Name="QuestionToken"/>
+            <PropertyComment>
+                <summary>SyntaxToken representing the question mark.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+    <Node Name="ConstructorConstraintSyntax" Base="TypeParameterConstraintSyntax">
+        <TypeComment>
+            <summary>Constructor constraint syntax.</summary>
+        </TypeComment>
+        <Kind Name="ConstructorConstraint"/>
+    </Node>
+    <Node Name="TypeConstraintSyntax" Base="TypeParameterConstraintSyntax">
+        <TypeComment>
+            <summary>Type constraint syntax.</summary>
+        </TypeComment>
+        <Kind Name="TypeConstraint"/>
+        <Field Name="Type" Type="TypeSyntax">
+            <PropertyComment>
+                <summary>Gets the type syntax.</summary>
+            </PropertyComment>
+        </Field>
+    </Node>
+    <Node Name="DefaultConstraintSyntax" Base="TypeParameterConstraintSyntax">
+        <TypeComment>
+            <summary>Default constraint syntax.</summary>
+        </TypeComment>
+        <Kind Name="DefaultConstraint"/>
     </Node>
 </Tree>

@@ -24,6 +24,10 @@ public class SyntaxToken : SyntaxNode {
 
     public override string ToString() => Text;
 
+    internal static SyntaxToken WithValue(string value) {
+        return new SyntaxToken(SyntaxKind.None); // TODO
+    }
+    
     internal static SyntaxToken WithValue(long value) {
         return new SyntaxToken(SyntaxKind.None); // TODO
     }
