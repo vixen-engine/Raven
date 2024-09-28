@@ -1,6 +1,4 @@
-using Vixen.Raven.Syntax;
-
-namespace Vixen.Raven;
+namespace Vixen.Raven.Syntax;
 
 public partial class SyntaxRewriter {
     // TODO: check this as I made this

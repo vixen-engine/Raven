@@ -1,6 +1,4 @@
-using Vixen.Raven.Syntax;
-
-namespace Vixen.Raven;
+namespace Vixen.Raven.Syntax;
 
 abstract class SyntaxList() : SyntaxNode(SyntaxKind.ListKind) {
     public override TResult? Accept<TResult>(SyntaxVisitor<TResult> visitor) where TResult : default =>

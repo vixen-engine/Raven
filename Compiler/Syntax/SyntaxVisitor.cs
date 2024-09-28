@@ -1,6 +1,4 @@
-using Vixen.Raven.Syntax;
-
-namespace Vixen.Raven;
+namespace Vixen.Raven.Syntax;
 
 public abstract partial class SyntaxVisitor {
     public virtual void Visit(SyntaxNode? node) {

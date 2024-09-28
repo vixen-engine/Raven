@@ -2,7 +2,7 @@ using Antlr4.Runtime.Tree;
 using Vixen.Raven.Grammar;
 using Vixen.Raven.Syntax;
 
-namespace Vixen.Raven.SyntaxBuilder;
+namespace Vixen.Raven.Syntax;
 
 public class SyntaxAntlrVisitor : RavenParser2BaseVisitor<SyntaxNode> {
     public override SyntaxNode VisitAliasQualifiedName(RavenParser2.AliasQualifiedNameContext context) {

@@ -17,19 +17,18 @@ class SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationT
         WriteLine();
         WriteLine("using System;");
         WriteLine("using System.Collections.Generic;");
-        WriteLine("using Vixen.Raven.Syntax;");
         WriteLine();
     }
 
     void WriteSyntax() {
         WriteFileHeader();
-        WriteLine("namespace Vixen.Raven;");
+        WriteLine("namespace Vixen.Raven.Syntax;");
         WriteTypes();
     }
 
     void WriteMain() {
         WriteFileHeader();
-        WriteLine("namespace Vixen.Raven;");
+        WriteLine("namespace Vixen.Raven.Syntax;");
 
         WriteVisitor(true);
         WriteVisitor(false);

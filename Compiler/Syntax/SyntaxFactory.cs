@@ -1,15 +1,6 @@
-using Vixen.Raven.Syntax;
-
-namespace Vixen.Raven;
+namespace Vixen.Raven.Syntax;
 
 public partial class SyntaxFactory {
-    // TODO
-
-    // public static SyntaxToken Create(SyntaxNode parent, SyntaxKind syntaxKind) {
-    //     return SyntaxToken.Create(parent, syntaxKind);
-    // }
-
-
     public static SyntaxToken Token(SyntaxKind kind) => new(kind);
 
     public static SyntaxToken Identifier(string text) => new SyntaxIdentifierToken(text);

@@ -132,19 +132,13 @@ public enum SyntaxKind : ushort {
     TupleType,
     DiscardDesignation,
     
+    VarPattern,
+    NotPattern,
+    TypePattern,
+    TypeParameterList
 }
 
 
 static class SyntaxKindExtensions {
     internal static SyntaxToken AsToken(this SyntaxKind kind) => new(kind);
-}
-
-
-// TODO
-public partial class TypeParameterListSyntax : SyntaxToken {
-    internal TypeParameterListSyntax(SyntaxKind kind) : base(kind) { }
-}
-
-public partial class TypeParameterConstraintClauseSyntax : SyntaxToken {
-    internal TypeParameterConstraintClauseSyntax(SyntaxKind kind) : base(kind) { }
 }

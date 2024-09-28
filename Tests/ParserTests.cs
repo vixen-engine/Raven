@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime;
-using Vixen.Raven;
+using Vixen.Raven.Syntax;
 using Vixen.Raven.Grammar;
 using Xunit;
 using Xunit.Abstractions;

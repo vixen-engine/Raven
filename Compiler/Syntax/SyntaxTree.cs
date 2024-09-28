@@ -1,10 +1,8 @@
 using Antlr4.Runtime;
 using System.Text;
 using Vixen.Raven.Grammar;
-using Vixen.Raven.Syntax;
-using Vixen.Raven.SyntaxBuilder;
 
-namespace Vixen.Raven;
+namespace Vixen.Raven.Syntax;
 
 public sealed class SyntaxTree {
     SyntaxNode? root;
